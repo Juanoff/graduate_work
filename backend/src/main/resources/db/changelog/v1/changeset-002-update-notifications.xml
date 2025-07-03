@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="002-update-notifications" author="juanoff">
+        <addColumn tableName="notifications">
+            <column name="type" type="varchar(20)" defaultValue="TASK">
+                <constraints nullable="false"/>
+            </column>
+            <column name="invitation_id" type="INT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_notifications_invitation"
+                             references="invitations(id)"/>
+            </column>
+            <column name="achievement_id" type="INT">
+                <constraints nullable="true"
+                             foreignKeyName="fk_notifications_achievement"
+                             references="achievements(id)"/>
+            </column>
+            <column name="message" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <dropNotNullConstraint
+                tableName="notifications"
+                columnName="task_id"
+                columnDataType="INT"/>
+    </changeSet>
+</databaseChangeLog>

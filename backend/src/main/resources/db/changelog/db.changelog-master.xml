@@ -1,0 +1,29 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <include file="v1/initial-schema.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-002-update-notifications.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-001-create-user-settings.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-003-update-achievement-column.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-004-update-notification-settings-column.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-005-update-message-column.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-006-update-notifications-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-007-update-invitations-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-008-update-users-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-009-update-notifications-types.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-010-update-type-column-in-notifications.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-011-add-calendar-columns-in-tasks-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-012-create-google-tokens-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-013-add-unique-index-and-scopes-in-google-tokens.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-014-change-type-of-scopes.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-015-change-type-of-refresh-token.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-016-change-type-of-access-token.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-017-change-subtask-category-id-in-tasks.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-018-create-and-add-column-email-in-google-tokens.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-019-create-sync-history-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-020-add-column-scopes-in-g-tokens.xml" relativeToChangelogFile="true"/>
+    <include file="v1/changeset-021-change-access-token-type.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>
