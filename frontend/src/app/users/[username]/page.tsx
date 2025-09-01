@@ -2,8 +2,10 @@ import { ProfileCard } from '@/components/ProfileCard';
 import { fetchUserByUsername } from '@/services/userService';
 import { Metadata } from 'next';
 
-export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
-	const username = params.username;
+export async function generateMetadata(
+	{ params }: { params: Promise<{ username: string }> }
+): Promise<Metadata> {
+	const { username } = await params;
 	const user = await fetchUserByUsername(username);
 
 	if (!user) {
