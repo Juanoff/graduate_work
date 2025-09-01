@@ -47,16 +47,12 @@ public class SecurityConfig {
                         .requestMatchers("/api/users/{username}").permitAll()
                         .requestMatchers("/api/users/**").hasRole("USER")
                         .requestMatchers("/ws/**").authenticated()
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Для CORS preflight
-                        //.requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        //.requestMatchers("/api/tasks/**").hasAnyRole("USER", "MANAGER", "ADMIN")
-                        //.requestMatchers("/api/comments/**").hasAnyRole("USER", "MANAGER", "ADMIN")
-                        //.requestMatchers("/api/tasks/**").authenticated()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                        .maximumSessions(3) // Ограничение на одну сессию per user
+                        .maximumSessions(3)
                         .expiredUrl("/api/auth/login")
                 )
                 .logout(logout -> logout
@@ -99,6 +95,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:3000");
+        config.addAllowedOrigin("https://graduate-work-frontend.onrender.com");
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of(
                 "Authorization",
@@ -117,7 +114,7 @@ public class SecurityConfig {
                 "Pragma"
         ));
 
-        // Установка времени кеширования preflight-запросов (в секундах)
+        // Установка времени кеширования preflight-запросов
         config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

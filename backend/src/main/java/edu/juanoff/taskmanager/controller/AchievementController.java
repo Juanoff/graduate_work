@@ -15,7 +15,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/achievements")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AchievementController {
 
     private final AchievementService achievementService;
