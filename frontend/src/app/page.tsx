@@ -24,10 +24,7 @@ import { Tooltip } from "@mui/material";
 import TaskCard from "@/components/TaskCard";
 import SearchAndFilter from "@/components/SearchAndFilter";
 import Loading from "@/components/Loading";
-
-export const canEditCategory = <T extends { accessLevel?: AccessLevel }>(task: T): boolean => {
-	return task.accessLevel === AccessLevel.OWNER;
-}
+import { canEditCategory } from "@/utils/permissions"
 
 export default function HomePage() {
 	const auth = useAuth();
