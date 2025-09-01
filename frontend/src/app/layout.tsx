@@ -39,14 +39,10 @@ export default function RootLayout({
 	const pathname = usePathname();
 	const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 	const unreadCount = useNotificationStore((state) => state.unreadCount);
-	// const resetUnreadCount = useNotificationStore((state) => state.resetUnreadCount);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 	const handleBellClick = () => {
 		setIsNotificationsOpen(!isNotificationsOpen);
-		// if (!isNotificationsOpen) {
-		// 	resetUnreadCount();
-		// }
 	};
 
 	const [isPomodoroOpen, setIsPomodoroOpen] = useState(false);

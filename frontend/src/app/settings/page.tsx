@@ -7,41 +7,6 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 
 export default function SettingsPage() {
-	// const [enableNotifications, setEnableNotifications] = useState<boolean>();
-	// const [taskNotificationInterval, setTaskNotificationInterval] = useState<number>(60);
-	// const [taskEnabled, setTaskEnabled] = useState(true);
-	// const [invitationEnabled, setInvitationEnabled] = useState(true);
-	// const [achievementEnabled, setAchievementEnabled] = useState(true);
-
-	// const handleIntervalChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-	// 	const value = parseInt(e.target.value);
-	// 	setTaskNotificationInterval(value);
-	// };
-
-	// const handleToggleNotifications = (checked: boolean) => {
-	// 	setEnableNotifications(checked);
-	// };
-
-	// const handleSettingsChange = async () => {
-	// 	try {
-	// 		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me/notification-settings`, {
-	// 			method: "PUT",
-	// 			headers: {
-	// 				"Content-Type": "application/json",
-	// 			},
-	// 			credentials: "include",
-	// 			body: JSON.stringify({ taskNotificationInterval, taskEnabled, invitationEnabled, achievementEnabled }),
-	// 		});
-
-	// 		if (!response.ok) {
-	// 			throw new Error("Failed to update settings");
-	// 		}
-	// 	} catch (error) {
-	// 		console.error(error);
-	// 		alert("Error updating settings");
-	// 	}
-	// };
-
 	const [isConnected, setIsConnected] = useState(false);
 	const [email, setEmail] = useState("");
 	const [isSyncing, setIsSyncing] = useState(false);
@@ -69,7 +34,6 @@ export default function SettingsPage() {
 
 		checkConnection();
 
-		// Handle redirect status
 		const status = searchParams.get("status");
 		const message = searchParams.get("message");
 		if (status === "success") {

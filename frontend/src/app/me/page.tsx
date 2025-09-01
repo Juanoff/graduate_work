@@ -11,36 +11,9 @@ import { useForm } from "react-hook-form";
 import { UserProfile } from "@/types/userProfile";
 import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { showOverdueToast } from "@/components/TaskCard";
 import Loading from "@/components/Loading";
-
-export const userUpdateSchema = z
-	.object({
-		username: z.string().min(3, "Минимум 3 символа").max(50, "Максимум 50 символов").optional(),
-		bio: z.string().max(160, "Максимум 160 символов").nullable().optional(),
-		email: z.string().email("Некорректный email").optional(),
-		currentPassword: z.string().optional(),
-		newPassword: z.string().optional(),
-	})
-	.superRefine((data, ctx) => {
-		if (data.currentPassword && !data.newPassword) {
-			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
-				path: ["newPassword"],
-				message: "Введите новый пароль, если указан текущий",
-			});
-		}
-		if (data.newPassword && (data.newPassword.length < 8 || data.newPassword.length > 100)) {
-			ctx.addIssue({
-				code: z.ZodIssueCode.custom,
-				path: ["newPassword"],
-				message: "Новый пароль должен быть от 8 до 100 символов",
-			});
-		}
-	});
-
-export type UserUpdateForm = z.infer<typeof userUpdateSchema>;
+import { userUpdateSchema, UserUpdateForm } from "@/schemas/userUpdate";
 
 const fetchUserProfile = async (): Promise<UserProfile> => {
 	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me`, {
