@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="017-change-subtask-category-id-in-tasks" author="juanoff">
+        <sql>
+            UPDATE tasks AS child
+            SET category_id = parent.category_id
+            FROM tasks AS parent
+            WHERE child.parent_task_id IS NOT NULL
+            AND child.category_id IS NULL
+            AND parent.id = child.parent_task_id;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

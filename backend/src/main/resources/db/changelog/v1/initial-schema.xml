@@ -1,0 +1,496 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-users-table" author="juanoff">
+        <createTable tableName="users">
+            <column name="id" type="SERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(50)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(100)">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="password_hash" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="insert-users" author="juanoff">
+        <insert tableName="users">
+            <column name="username" value="newUser"/>
+            <column name="email" value="newuser@example.com"/>
+            <column name="password_hash" value="$2a$10$gBTLNqkFDij.Un1B35uRYOIX0NFxNJ..PjsQMwVF86nmUx1bt.ugO"/>
+            <column name="role" value="USER"/>
+        </insert>
+        <insert tableName="users">
+            <column name="username" value="newUser2"/>
+            <column name="email" value="newuser2@example.com"/>
+            <column name="password_hash" value="$2a$10$glkz2e7fu5aAiDpDmbLDquAufU4ZeWDJNxCEAwILGu8fmb9cInKjW"/>
+            <column name="role" value="USER"/>
+        </insert>
+        <insert tableName="users">
+            <column name="username" value="newUser3"/>
+            <column name="email" value="newuser3@example.com"/>
+            <column name="password_hash" value="$2a$10$HjtB8M4M7qAmngLeRpwnHe7af1tNiIbBFYmtOGlbsUWLfwHndpzU2"/>
+            <column name="role" value="USER"/>
+        </insert>
+        <insert tableName="users">
+            <column name="username" value="newAdmin"/>
+            <column name="email" value="newadmin@example.com"/>
+            <column name="password_hash" value="$2a$10$43H8XnMHwkHLRpMGWu.cyeiAu/xK7MAwFVoXAfxk4yE4r9sx9uE2."/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+    </changeSet>
+
+    <!-- Создание таблицы categories -->
+    <changeSet id="create-categories-table" author="juanoff">
+        <createTable tableName="categories">
+            <column name="id" type="SERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="color" type="VARCHAR(7)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="categories"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_categories_user"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Создание таблицы achievements -->
+    <changeSet id="create-achievements-table" author="juanoff">
+        <createTable tableName="achievements">
+            <column name="id" type="SERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="target_value" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Создание таблицы user_achievements -->
+    <changeSet id="create-user_achievements-table" author="juanoff">
+        <createTable tableName="user_achievements">
+            <column name="id" type="SERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="achievement_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="progress" type="INT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="completed" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="user_achievements"
+                baseColumnNames="achievement_id"
+                referencedTableName="achievements"
+                referencedColumnNames="id"
+                constraintName="fk_user_achievements_achievement"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="user_achievements"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_user_achievements_user"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="create-tasks-table" author="juanoff">
+        <createTable tableName="tasks">
+            <column name="id" type="SERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="status" type="VARCHAR(255)" defaultValue="TO_DO">
+                <constraints nullable="false"/>
+            </column>
+            <column name="priority" type="VARCHAR(255)" defaultValue="MEDIUM">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="INT"/>
+            <column name="due_date" type="TIMESTAMP"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="completed_at" type="TIMESTAMP"/>
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_task_id" type="INT"/>
+            <column name="notified" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="tasks"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_tasks_user"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="tasks"
+                baseColumnNames="parent_task_id"
+                referencedTableName="tasks"
+                referencedColumnNames="id"
+                constraintName="fk_tasks_parent_task"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="tasks"
+                baseColumnNames="category_id"
+                referencedTableName="categories"
+                referencedColumnNames="id"
+                constraintName="fk_tasks_category"/>
+    </changeSet>
+
+    <changeSet id="insert-tasks" author="juanoff">
+        <insert tableName="tasks">
+            <column name="title" value="Task 1"/>
+            <column name="description" value="First task description"/>
+            <column name="status" value="IN_PROGRESS"/>
+            <column name="priority" value="LOW"/>
+            <column name="due_date" valueDate="2025-03-10T12:00:00"/>
+            <column name="user_id" value="1"/>
+        </insert>
+
+        <insert tableName="tasks">
+            <column name="title" value="Task 2"/>
+            <column name="description" value="Second task description"/>
+            <column name="status" value="TO_DO"/>
+            <column name="due_date" valueDate="2025-03-15T18:00:00"/>
+            <column name="user_id" value="2"/>
+        </insert>
+
+        <insert tableName="tasks">
+            <column name="title" value="Task 4"/>
+            <column name="description" value="Need to go to university"/>
+            <column name="status" value="TO_DO"/>
+            <column name="priority" value="HIGH"/>
+            <column name="due_date" valueDate="2025-02-27T21:00:00"/>
+            <column name="user_id" value="1"/>
+        </insert>
+
+        <insert tableName="tasks">
+            <column name="title" value="Task 5"/>
+            <column name="description" value="Need to go to store"/>
+            <column name="status" value="TO_DO"/>
+            <column name="priority" value="LOW"/>
+            <column name="due_date" valueDate="2025-02-27T23:00:00"/>
+            <column name="user_id" value="1"/>
+        </insert>
+
+        <insert tableName="tasks">
+            <column name="title" value="Task 6"/>
+            <column name="description" value="Need to execute file"/>
+            <column name="status" value="TO_DO"/>
+            <column name="priority" value="LOW"/>
+            <column name="due_date" valueDate="2025-02-27T23:00:00"/>
+            <column name="user_id" value="2"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="insert-subtasks" author="juanoff">
+        <insert tableName="tasks">
+            <column name="title" value="Task 3"/>
+            <column name="description" value="This is a subtask of Task 1"/>
+            <column name="status" value="DONE"/>
+            <column name="due_date" valueDate="2025-03-28T09:00:00"/>
+            <column name="user_id" value="1"/>
+            <column name="parent_task_id" value="1"/>
+        </insert>
+        <insert tableName="tasks">
+            <column name="title" value="Task 31"/>
+            <column name="description" value="This is a subtask 2 of Task 1"/>
+            <column name="status" value="TO_DO"/>
+            <column name="priority" value="LOW"/>
+            <column name="due_date" valueDate="2025-03-28T09:00:00"/>
+            <column name="user_id" value="1"/>
+            <column name="parent_task_id" value="1"/>
+        </insert>
+    </changeSet>
+
+    <!-- Создание таблицы notifications -->
+    <changeSet id="create-notifications-table" author="juanoff">
+        <createTable tableName="notifications">
+            <column name="id" type="SERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="task_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_read" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_closed" type="boolean" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="notifications"
+                baseColumnNames="task_id"
+                referencedTableName="tasks"
+                referencedColumnNames="id"
+                constraintName="fk_notifications_task"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="notifications"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_notifications_user"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Создание таблицы task_assignments -->
+    <changeSet id="create-task-assignments-table" author="juanoff">
+        <createTable tableName="task_assignments">
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assigned_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="task_assignments"
+                columnNames="user_id, task_id"
+                constraintName="pk_task_assignments"/>
+
+        <addForeignKeyConstraint
+                baseTableName="task_assignments"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_task_assignments_user"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="task_assignments"
+                baseColumnNames="task_id"
+                referencedTableName="tasks"
+                referencedColumnNames="id"
+                constraintName="fk_task_assignments_task"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Создание таблицы comments -->
+    <changeSet id="create-comments-table" author="juanoff">
+        <createTable tableName="comments">
+            <column name="id" type="SERIAL" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="content" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="comments"
+                baseColumnNames="task_id"
+                referencedTableName="tasks"
+                referencedColumnNames="id"
+                constraintName="fk_comments_task"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="comments"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_comments_user"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Создание таблицы task_access -->
+    <changeSet id="create-task-access-table" author="juanoff">
+        <createTable tableName="task_access">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="task_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="access_level" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="task_access"
+                baseColumnNames="task_id"
+                referencedTableName="tasks"
+                referencedColumnNames="id"
+                constraintName="fk_task_access_task"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="task_access"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_task_access_user"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Создание таблицы invitations -->
+    <changeSet id="create-invitations-table" author="juanoff">
+        <createTable tableName="invitations">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="task_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sender_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="recipient_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="invitations"
+                baseColumnNames="task_id"
+                referencedTableName="tasks"
+                referencedColumnNames="id"
+                constraintName="fk_invitation_task"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="invitations"
+                baseColumnNames="sender_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_invitation_sender"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="invitations"
+                baseColumnNames="recipient_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                constraintName="fk_invitation_recipient"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Создание индексов -->
+    <changeSet id="create-indexes" author="juanoff">
+        <!-- Индексы для таблицы tasks -->
+        <createIndex
+                tableName="tasks"
+                indexName="idx_tasks_parent_task_id">
+            <column name="parent_task_id"/>
+        </createIndex>
+
+        <createIndex
+                tableName="tasks"
+                indexName="idx_tasks_user_id">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex
+                tableName="tasks"
+                indexName="idx_tasks_status">
+            <column name="status"/>
+        </createIndex>
+
+        <createIndex
+                tableName="tasks"
+                indexName="idx_tasks_due_date">
+            <column name="due_date"/>
+        </createIndex>
+
+        <!-- Индексы для таблицы task_assignments -->
+        <createIndex
+                tableName="task_assignments"
+                indexName="idx_task_assignments_task_id">
+            <column name="task_id"/>
+        </createIndex>
+
+        <!-- Индексы для таблицы comments -->
+        <createIndex
+                tableName="comments"
+                indexName="idx_comments_task_id">
+            <column name="task_id"/>
+        </createIndex>
+
+        <createIndex
+                tableName="comments"
+                indexName="idx_comments_user_id">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

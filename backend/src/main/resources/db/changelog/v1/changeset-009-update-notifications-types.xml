@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="009-update-notification-types" author="juanoff">
+        <update tableName="notifications">
+            <column name="type" value="TASK_DEADLINE"/>
+            <where>type = 'TASK'</where>
+        </update>
+
+        <update tableName="notifications">
+            <column name="type" value="TASK_INVITATION"/>
+            <where>type = 'INVITATION'</where>
+        </update>
+
+        <update tableName="notifications">
+            <column name="type" value="USER_ACHIEVEMENT"/>
+            <where>type = 'ACHIEVEMENT'</where>
+        </update>
+
+        <rollback>
+            <update tableName="notifications">
+                <column name="type" value="TASK"/>
+                <where>type = 'TASK_DEADLINE'</where>
+            </update>
+            <update tableName="notifications">
+                <column name="type" value="INVITATION"/>
+                <where>type = 'TASK_INVITATION'</where>
+            </update>
+            <update tableName="notifications">
+                <column name="type" value="ACHIEVEMENT"/>
+                <where>type = 'USER_ACHIEVEMENT'</where>
+            </update>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

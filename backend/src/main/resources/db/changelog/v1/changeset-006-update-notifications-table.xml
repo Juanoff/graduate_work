@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="006-update-notifications-table" author="juanoff">
+        <addColumn tableName="notifications">
+            <column name="title" type="varchar(255)" defaultValue="Unknown">
+                <constraints nullable="false"/>
+            </column>
+            <column name="metadata" type="text"/>
+        </addColumn>
+
+        <sql>
+            UPDATE notifications
+            SET title = 'Напоминание о задаче',
+            metadata = jsonb_build_object(
+            'taskId', t.id::text,
+            'taskName', t.title,
+            'deadline', to_char(t.due_date, 'HH24:MI')
+            )
+            FROM tasks t
+            WHERE notifications.task_id = t.id
+            AND notifications.type = 'TASK';
+        </sql>
+
+        <!-- Для INVITATION -->
+        <sql>
+            UPDATE notifications
+            SET title = 'Новое приглашение',
+            metadata = jsonb_build_object(
+            'invitationId', i.id::text,
+            'inviterName', u.username
+            )
+            FROM invitations i
+            JOIN users u ON i.sender_id = u.id
+            WHERE notifications.invitation_id = i.id
+            AND notifications.type = 'INVITATION';
+        </sql>
+
+        <!-- Для ACHIEVEMENT -->
+        <sql>
+            UPDATE notifications
+            SET title = 'Новое достижение',
+            metadata = jsonb_build_object(
+            'achievementId', ua.id::text,
+            'achievementName', a.name
+            )
+            FROM user_achievements ua
+            JOIN achievements a ON ua.achievement_id = a.id
+            WHERE notifications.user_achievement_id = ua.id
+            AND notifications.type = 'ACHIEVEMENT';
+        </sql>
+
+        <dropColumn columnName="task_id" tableName="notifications"/>
+        <dropColumn columnName="invitation_id" tableName="notifications"/>
+        <dropColumn columnName="user_achievement_id" tableName="notifications"/>
+    </changeSet>
+</databaseChangeLog>
