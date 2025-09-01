@@ -3,4 +3,4 @@ WORKDIR /app
 COPY . .
 RUN ./gradlew bootJar
 EXPOSE 8080
-CMD ["java", "-jar", "build/libs/*.jar"]
+CMD ["java", "-jar", "build/libs/graduate_work-1.0-SNAPSHOT.jar"]
