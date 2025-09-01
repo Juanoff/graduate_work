@@ -2,7 +2,6 @@ import { ProfileCard } from '@/components/ProfileCard';
 import { fetchUserByUsername } from '@/services/userService';
 import { Metadata } from 'next';
 
-// Генерация метаданных для SEO
 export async function generateMetadata({ params }: { params: { username: string } }): Promise<Metadata> {
 	const username = params.username;
 	const user = await fetchUserByUsername(username);
@@ -19,10 +18,13 @@ export async function generateMetadata({ params }: { params: { username: string 
 	};
 }
 
-export default async function UserProfilePage({ params }: { params: { username: string } }) {
+export default async function UserProfilePage(
+	props: { params: Promise<{ username: string }> }
+) {
+	const { username } = await props.params;
 	let user;
+
 	try {
-		const username = params.username;
 		user = await fetchUserByUsername(username);
 	} catch {
 		return (

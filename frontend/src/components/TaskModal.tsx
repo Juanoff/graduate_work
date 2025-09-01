@@ -11,7 +11,7 @@ import { statusStyles } from "./TaskColumn";
 import { AccessLevel, Priority, StatusType, Task } from "@/types/task";
 import { ru } from "date-fns/locale";
 import { Tooltip } from "@mui/material";
-import { canEditCategory } from "@/app/page";
+import { canEditCategory } from "@/utils/permissions";
 
 interface TaskModalProps {
 	onClose: () => void;

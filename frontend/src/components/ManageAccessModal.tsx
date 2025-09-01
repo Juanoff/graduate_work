@@ -7,7 +7,6 @@ import { XMarkIcon, TrashIcon, UserIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { AccessLevel } from '@/types/task';
-// import { useAuth } from '../../../lib/useAuth';
 
 export interface TaskAccess {
 	id: number;
