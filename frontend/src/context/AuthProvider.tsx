@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useState, ReactNode, useEffect } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { checkAuth, login as loginService, logout as logoutService } from "@/services/authService";
 import { useNotificationStore } from "@/stores/notificationStore";
@@ -33,7 +33,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const router = useRouter();
 	const pathname = usePathname();
-	const searchParams = useSearchParams();
 
 	useWebSocket(user?.id || 0);
 
@@ -53,7 +52,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
 				if (pathname !== "/login" && pathname !== "/register") {
 					console.log("Redirecting to login from AuthProvider");
-					router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+					const searchParams = new URLSearchParams(window.location.search);
+					const redirect = searchParams.get("redirect") || pathname;
+					router.push(`/login?redirect=${encodeURIComponent(redirect)}`);
 				}
 			} finally {
 				setIsLoading(false);
@@ -69,7 +70,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 			const userData = await loginService(username, password);
 			setUser({ id: userData.id, username: userData.username, role: userData.role });
 
-			const redirectPath = searchParams?.get("redirect") || "/me";
+			const searchParams = new URLSearchParams(window.location.search);
+			const redirectPath = searchParams.get("redirect") || "/me";
 			router.push(redirectPath);
 			return true;
 		} catch (error) {
