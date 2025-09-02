@@ -47,8 +47,8 @@ export const useTaskStore = create<TaskState>((set) => ({
 			})),
 		})),
 	updateTask: (updatedTask) =>
-		set((state) => ({
-			tasks: state.tasks.map((task) =>
+		set((state) => {
+			const updatedTasks = state.tasks.map((task) =>
 				task.id === updatedTask.id
 					? {
 						...updatedTask,
@@ -57,8 +57,15 @@ export const useTaskStore = create<TaskState>((set) => ({
 							: undefined,
 					}
 					: task
-			),
-		})),
+			);
+
+			return {
+				tasks: updatedTasks,
+				filteredTasks: state.filteredTasks.map((task) =>
+					task.id === updatedTask.id ? updatedTask : task
+				),
+			};
+		}),
 	addTask: (task) =>
 		set((state) => ({
 			tasks: [

@@ -396,22 +396,6 @@ export default function HomePage() {
 						}
 					</DragOverlay>
 				</DndContext>
-
-				{/* <Toaster position="top-right" /> */}
-
-				{/* Визуальное уведомление о завершении таймера */}
-				{/* <AnimatePresence>
-					{showTimerEndNotification && (
-						<motion.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: 20 }}
-							className="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg"
-						>
-							Время Pomodoro таймера завершено!
-						</motion.div>
-					)}
-				</AnimatePresence> */}
 			</div>
 
 			{/* Модальное окно для добавления/редактирования категории */}
@@ -500,21 +484,6 @@ export default function HomePage() {
 					</div>
 				</Dialog>
 			</Transition>
-
-			{/* <TaskModal
-				isTaskModalOpen={isTaskModalOpen}
-				updateTaskModal={updateTaskModal}
-				newTask={newTask}
-				setNewTask={setNewTask}
-				editTask={editTask}
-				categories={categories}
-				hasDueDate={hasDueDate}
-				setHasDueDate={setHasDueDate}
-				dueDateError={dueDateError}
-				setDueDateError={setDueDateError}
-				handleAddOrUpdateTask={handleAddOrUpdateTask}
-				isFormValid={isFormValid}
-			/> */}
 
 			{/* Модальное окно для добавления/редактирования задачи */}
 			<Transition appear show={isTaskModalOpen} as={Fragment}>
