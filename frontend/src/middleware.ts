@@ -30,6 +30,10 @@ async function isAuthenticated(req: NextRequest): Promise<boolean> {
 export async function middleware(req: NextRequest) {
 	const { pathname, search } = req.nextUrl;
 
+	if (req.method === 'OPTIONS') {
+		return NextResponse.next();
+	}
+
 	// Пропускаем публичные маршруты
 	const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
 	if (isPublicPath) {
@@ -39,11 +43,16 @@ export async function middleware(req: NextRequest) {
 	// Проверяем авторизацию
 	const authenticated = await isAuthenticated(req);
 
+	console.log('Request path:', pathname);
+	console.log('Authenticated:', authenticated);
+	console.log('Session cookie exists:', !!req.cookies.get("JSESSIONID"));
+
 	// Если пользователь не авторизован и пытается зайти на защищенный маршрут
 	if (!authenticated) {
 		const loginUrl = new URL("/login", req.url);
-		const redirect = pathname + search;
-		loginUrl.searchParams.set("redirect", redirect);
+		if (!pathname.startsWith('/api/')) {
+			loginUrl.searchParams.set("redirect", pathname + search);
+		}
 		return NextResponse.redirect(loginUrl);
 	}
 

@@ -50,15 +50,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 		verifyAuth();
 	}, []);
 
-	// если появился user редиректим
-	useEffect(() => {
-		if (user) {
-			const redirectPath =
-				new URLSearchParams(window.location.search).get("redirect") || "/me";
-			router.replace(redirectPath);
-		}
-	}, [user, router]);
-
 	const login = async (username: string, password: string) => {
 		try {
 			const userData = await loginService(username, password);
