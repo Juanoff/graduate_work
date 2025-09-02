@@ -9,8 +9,6 @@ export const useWebSocket = (userId: number) => {
 		initializeWebSocket(userId);
 
 		return () => {
-			// Отключение при размонтировании приложения, если нужно
-			// disconnectWebSocket(); // Оставьте закомментированным, если соединение должно быть постоянным
 		};
 	}, [userId]);
 

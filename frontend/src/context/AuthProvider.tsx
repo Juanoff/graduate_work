@@ -28,6 +28,8 @@ interface AuthProviderProps {
 	children: ReactNode;
 }
 
+const publicPaths = ["/login", "/register"];
+
 const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [user, setUser] = useState<User | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
@@ -39,21 +41,19 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 	useEffect(() => {
 		const verifyAuth = async () => {
 			try {
-				if (pathname === "/login" || pathname === "/register") {
-					setIsLoading(false);
-					return;
-				}
-
 				const userData = await checkAuth();
 				setUser({ id: userData.id, username: userData.username, role: userData.role });
+
+				if (publicPaths.includes(pathname)) {
+					router.push("/me");
+				}
 			} catch (error) {
 				console.error("Auth check failed:", error);
 				setUser(null);
 
-				if (pathname !== "/login" && pathname !== "/register") {
+				if (!publicPaths.includes(pathname)) {
 					console.log("Redirecting to login from AuthProvider");
-					const searchParams = new URLSearchParams(window.location.search);
-					const redirect = searchParams.get("redirect") || pathname;
+					const redirect = pathname;
 					router.push(`/login?redirect=${encodeURIComponent(redirect)}`);
 				}
 			} finally {

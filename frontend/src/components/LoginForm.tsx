@@ -23,7 +23,6 @@ const LoginForm = () => {
 			setError("Неверные данные!");
 		} else {
 			console.log("Login successful, redirecting...");
-			// Редирект уже в AuthProvider, здесь ничего не нужно
 		}
 	};
 
