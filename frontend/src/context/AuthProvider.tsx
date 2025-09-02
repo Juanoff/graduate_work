@@ -50,17 +50,19 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 		verifyAuth();
 	}, []);
 
+	// если появился user редиректим
+	useEffect(() => {
+		if (user) {
+			const redirectPath =
+				new URLSearchParams(window.location.search).get("redirect") || "/me";
+			router.replace(redirectPath);
+		}
+	}, [user, router]);
+
 	const login = async (username: string, password: string) => {
-		// console.time("Login request");
 		try {
 			const userData = await loginService(username, password);
-			// console.timeEnd("Login request");
-			// console.log("User data received: ", userData);
 			setUser({ id: userData.id, username: userData.username, role: userData.role });
-			const redirectPath = new URLSearchParams(window.location.search).get("redirect") || "/me";
-			// console.time("Redirect to me");
-			router.push(redirectPath);
-			// console.timeEnd("Redirect to me");
 			return true;
 		} catch {
 			return false;

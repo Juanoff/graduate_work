@@ -28,7 +28,7 @@ async function isAuthenticated(req: NextRequest): Promise<boolean> {
 }
 
 export async function middleware(req: NextRequest) {
-	const { pathname } = req.nextUrl;
+	const { pathname, search } = req.nextUrl;
 
 	// Пропускаем публичные маршруты
 	const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
@@ -42,7 +42,8 @@ export async function middleware(req: NextRequest) {
 	// Если пользователь не авторизован и пытается зайти на защищенный маршрут
 	if (!authenticated) {
 		const loginUrl = new URL("/login", req.url);
-		loginUrl.searchParams.set("redirect", pathname);
+		const redirect = pathname + search;
+		loginUrl.searchParams.set("redirect", redirect);
 		return NextResponse.redirect(loginUrl);
 	}
 
