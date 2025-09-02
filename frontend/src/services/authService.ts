@@ -1,23 +1,52 @@
 export const checkAuth = async () => {
-	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
-		method: "GET",
-		credentials: "include",
-	});
+	try {
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-	if (!response.ok) throw new Error("Not authenticated");
-	return response.json();
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
+			method: "GET",
+			credentials: "include",
+		});
+
+		clearTimeout(timeoutId);
+
+		if (!response.ok) {
+			throw new Error("Auth check failed");
+		}
+
+		return response.json();
+	} catch (error) {
+		console.error("Auth check error:", error);
+		throw error;
+	}
 };
 
 export const login = async (username: string, password: string) => {
-	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({ username, password }),
-		credentials: "include",
-	});
+	try {
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-	if (!response.ok) throw new Error("Login failed");
-	return response.json();
+		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ username, password }),
+			credentials: "include",
+			signal: controller.signal,
+		});
+
+		clearTimeout(timeoutId);
+
+		if (!response.ok) {
+			throw new Error("Login failed");
+		}
+
+		return response.json();
+	} catch (error) {
+		console.error("Login error:", error);
+		throw error;
+	}
 };
 
 export const logout = async () => {
@@ -25,6 +54,6 @@ export const logout = async () => {
 		method: "POST",
 		credentials: "include",
 	});
-	
+
 	if (!response.ok) throw new Error("Logout failed");
 };

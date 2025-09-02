@@ -11,13 +11,22 @@ async function isAuthenticated(req: NextRequest): Promise<boolean> {
 	}
 
 	try {
-		const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
-			method: "GET",
-			headers: {
-				Cookie: `JSESSIONID=${sessionCookie.value}`,
-			},
-			credentials: "include",
-		});
+		const controller = new AbortController();
+		const timeout = setTimeout(() => controller.abort(), 5000);
+
+		const response = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`,
+			{
+				method: "GET",
+				headers: {
+					Cookie: `JSESSIONID=${sessionCookie.value}`,
+				},
+				credentials: "include",
+				signal: controller.signal,
+			}
+		);
+
+		clearTimeout(timeout);
 
 		console.log("Middleware auth check status:", response.status);
 		return response.ok;
@@ -28,9 +37,9 @@ async function isAuthenticated(req: NextRequest): Promise<boolean> {
 }
 
 export async function middleware(req: NextRequest) {
-	const { pathname, search } = req.nextUrl;
+	const { pathname } = req.nextUrl;
 
-	if (req.method === 'OPTIONS') {
+	if (req.method === 'OPTIONS' || pathname.startsWith("/api/")) {
 		return NextResponse.next();
 	}
 
@@ -50,9 +59,7 @@ export async function middleware(req: NextRequest) {
 	// Если пользователь не авторизован и пытается зайти на защищенный маршрут
 	if (!authenticated) {
 		const loginUrl = new URL("/login", req.url);
-		if (!pathname.startsWith('/api/')) {
-			loginUrl.searchParams.set("redirect", pathname + search);
-		}
+		loginUrl.searchParams.set("redirect", pathname);
 		return NextResponse.redirect(loginUrl);
 	}
 

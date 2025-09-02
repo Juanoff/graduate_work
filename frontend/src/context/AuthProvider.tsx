@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useState, ReactNode, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useWebSocket } from "@/hooks/useWebSocket";
 import { checkAuth, login as loginService, logout as logoutService } from "@/services/authService";
 import { useNotificationStore } from "@/stores/notificationStore";
@@ -32,47 +32,67 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [user, setUser] = useState<User | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 	const router = useRouter();
+	const pathname = usePathname();
+	const searchParams = useSearchParams();
 
 	useWebSocket(user?.id || 0);
 
 	useEffect(() => {
 		const verifyAuth = async () => {
 			try {
+				if (pathname === "/login" || pathname === "/register") {
+					setIsLoading(false);
+					return;
+				}
+
 				const userData = await checkAuth();
 				setUser({ id: userData.id, username: userData.username, role: userData.role });
-			} catch {
+			} catch (error) {
+				console.error("Auth check failed:", error);
 				setUser(null);
+
+				if (pathname !== "/login" && pathname !== "/register") {
+					console.log("Redirecting to login from AuthProvider");
+					router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+				}
 			} finally {
 				setIsLoading(false);
 			}
 		};
 
 		verifyAuth();
-	}, []);
+	}, [pathname, router]);
 
 	const login = async (username: string, password: string) => {
 		try {
+			setIsLoading(true);
 			const userData = await loginService(username, password);
 			setUser({ id: userData.id, username: userData.username, role: userData.role });
-			const redirectPath = new URLSearchParams(window.location.search).get("redirect") || "/me";
-			// console.time("Redirect to me");
+
+			const redirectPath = searchParams?.get("redirect") || "/me";
 			router.push(redirectPath);
 			return true;
-		} catch {
+		} catch (error) {
+			console.error("Login failed:", error);
 			return false;
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
 	const logout = async () => {
 		try {
+			setIsLoading(true);
 			await logoutService();
+		} catch (error) {
+			console.error("Logout error:", error);
+		} finally {
 			useNotificationStore.getState().resetNotifications();
 			useTaskStore.getState().resetTasks();
 			disconnectWebSocket();
 			setUser(null);
-			router.replace("/login");
-		} catch {
-			router.replace("/login");
+			router.push("/login");
+			setIsLoading(false);
 		}
 	};
 
