@@ -54,6 +54,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 		try {
 			const userData = await loginService(username, password);
 			setUser({ id: userData.id, username: userData.username, role: userData.role });
+			const redirectPath = new URLSearchParams(window.location.search).get("redirect") || "/me";
+			// console.time("Redirect to me");
+			router.push(redirectPath);
 			return true;
 		} catch {
 			return false;
