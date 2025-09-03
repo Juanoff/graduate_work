@@ -113,8 +113,8 @@ public class Task {
     @PrePersist
     @PreUpdate
     public void validateNesting() {
-        if (getNestingLevel() >= 3) {
-            throw new IllegalStateException("Максимальная вложенность подзадач — 2 уровня.");
+        if (getNestingLevel() >= 2) {
+            throw new IllegalStateException("Нельзя создать подзадачу у подзадачи.");
         }
     }
 
