@@ -246,7 +246,7 @@ const NotificationsDropdown = ({ onClose }: { onClose: () => void }) => {
 	};
 
 	return (
-		<div className="absolute right-0 top-full mt-2 w-80 bg-white shadow-lg rounded-lg p-5 z-50 border border-gray-200">
+		<div className="absolute right-0 top-full mt-6 w-80 bg-white shadow-lg rounded-lg p-5 z-50 border border-gray-200">
 			<div className="flex justify-between items-center mb-2">
 				<h3 className="text-lg font-semibold text-gray-900 ml-1">Уведомления</h3>
 				<button

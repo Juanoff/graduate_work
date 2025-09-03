@@ -53,6 +53,7 @@ export default function TaskPage() {
 	const [error, setError] = useState<string | null>(null);
 
 	const canInvite = task?.accessLevel === AccessLevel.OWNER;
+	const canEdit = task?.accessLevel === AccessLevel.OWNER || task?.accessLevel === AccessLevel.EDIT;
 	const maxAvatars = 3;
 
 	const fetchTaskAndCategory = useCallback(async () => {
@@ -313,7 +314,9 @@ export default function TaskPage() {
 							type="checkbox"
 							checked={selectedSubtasks.includes(subtask.id ?? 0)}
 							onChange={() => toggleSubtaskSelection(subtask.id ?? 0)}
-							className="h-4 w-4 text-blue-600 rounded ml-2"
+							disabled={!canEdit}
+							className={`h-4 w-4 text-blue-600 rounded ml-2 ${!canEdit ?
+								"cursor-not-allowed opacity-50" : ""}`}
 						/>
 						<div
 							onClick={(event) => {
@@ -399,7 +402,7 @@ export default function TaskPage() {
 
 			{error && <p className="text-red-500 mb-4">{error}</p>}
 
-			<h1 className="text-3xl font-bold text-gray-900 inline-block">{task.title} <PencilIcon className="w-5 h-5 mb-1 mt-1 ml-2 inline-block"/></h1>
+			<h1 className="text-3xl font-bold text-gray-900 inline-block">{task.title} <PencilIcon className="w-5 h-5 mb-1 mt-1 ml-2 inline-block" /></h1>
 			<p className="text-gray-600 mt-2">{task.description || "Без описания"}</p>
 
 			<p className="mt-4 text-gray-800">
@@ -447,8 +450,6 @@ export default function TaskPage() {
 			{accessList.length > 0 && (
 				<div className="mt-5 flex items-center gap-3">
 					<div className="flex items-center gap-1">
-						{/* <UsersIcon className="w-5 h-5 text-gray-800 dark:text-gray-400" /> */}
-						{/* text-sm text-gray-700 */}
 						<span className=" text-gray-800 dark:text-gray-300">
 							<strong>Участники:</strong>
 						</span>
@@ -537,7 +538,7 @@ export default function TaskPage() {
 			/>
 
 			<div className="mt-8">
-				<div className="flex justify-between items-center mb-4">
+				{canEdit && !task.parentTaskId && (<div className="flex justify-between items-center mb-4">
 					<h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
 						Подзадачи
 						{(task.subtasksCount ?? 0) > 0 && (
@@ -551,11 +552,12 @@ export default function TaskPage() {
 					>
 						Добавить подзадачу
 					</button>
-				</div>
+				</div>)}
+
 				{task.subtasks?.length ?? 0 > 0 ? (
 					<>
 						{renderSubtasks(task.subtasks ?? [])}
-						{selectedSubtasks.length > 0 && (
+						{canEdit && selectedSubtasks.length > 0 && (
 							<button
 								onClick={handleDeleteSubtasks}
 								className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
