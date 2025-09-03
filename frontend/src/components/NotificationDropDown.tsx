@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from '@/context/useAuth';
-// import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Type, Notification, useNotificationStore } from '../stores/notificationStore';
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { formatDistanceToNow } from "date-fns";
@@ -10,94 +9,21 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Cog6ToothIcon } from '@heroicons/react/24/outline';
 
-// const fetchNotifications = async (userId: number) => {
-// 	const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/notifications?userId=${userId}`, {
-// 		credentials: 'include',
-// 	});
-// 	if (!response.ok) throw new Error('Failed to fetch notifications');
-// 	return response.json();
-// };
-
 const NotificationsDropdown = ({ onClose }: { onClose: () => void }) => {
 	const auth = useAuth();
 	const { notifications, closeNotification, markAsRead } = useNotificationStore();
-	// const queryClient = useQueryClient();
-
-	// const { data: serverNotifications, isLoading } = useQuery({
-	// 	queryKey: ['notifications', userId],
-	// 	queryFn: () => fetchNotifications(userId),
-	// 	onSuccess: (data) => useNotificationStore.getState().setNotifications(data),
-	// });
-
-	// const markAsReadMutation = useMutation({
-	// 	mutationFn: (id: number) =>
-	// 		fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/notifications/${id}/read`, {
-	// 			method: 'PATCH',
-	// 			credentials: 'include',
-	// 		}).then((res) => {
-	// 			if (!res.ok) throw new Error('Failed to mark as read');
-	// 		}),
-	// 	onSuccess: (_, id) => {
-	// 		markAsRead(id);
-	// 		queryClient.invalidateQueries(['notifications', userId]);
-	// 	},
-	// 	onError: (error) => console.error('Error marking as read:', error),
-	// });
-
-	// const closeNotificationMutation = useMutation({
-	// 	mutationFn: (id: number) =>
-	// 		fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/notifications/${id}/close`, {
-	// 			method: 'PATCH',
-	// 			credentials: 'include',
-	// 		}).then((res) => {
-	// 			if (!res.ok) throw new Error('Failed to close notification');
-	// 		}),
-	// 	onSuccess: (_, id) => {
-	// 		closeNotification(id);
-	// 		queryClient.invalidateQueries(['notifications', userId]);
-	// 	},
-	// 	onError: (error) => console.error('Error closing notification:', error),
-	// });
-
-	// const closeAllNotificationsMutation = useMutation({
-	// 	mutationFn: () =>
-	// 		Promise.all(
-	// 			notifications
-	// 				.filter((n) => !n.isClosed)
-	// 				.map((n) =>
-	// 					fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/notifications/${n.id}/close`, {
-	// 						method: 'PATCH',
-	// 						credentials: 'include',
-	// 					}).then((res) => {
-	// 						if (!res.ok) throw new Error(`Failed to close ${n.id}`);
-	// 						return n.id;
-	// 					})
-	// 				)
-	// 		),
-	// 	onSuccess: (closedIds) => {
-	// 		closedIds.forEach((id) => closeNotification(id));
-	// 		queryClient.invalidateQueries(['notifications', userId]);
-	// 	},
-	// 	onError: (error) => console.error('Error closing all notifications:', error),
-	// });
-
 	const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-	const [enableNotifications] = useState(true); //, setEnableNotifications
+	const [enableNotifications] = useState(true);
 	const [taskEnabled, setTaskEnabled] = useState(true);
 	const [invitationEnabled, setInvitationEnabled] = useState(true);
 	const [achievementEnabled, setAchievementEnabled] = useState(true);
 	const [taskNotificationInterval, setTaskNotificationInterval] = useState(30);
-
-	// const handleToggleNotifications = (checked: boolean) => {
-	// 	setEnableNotifications(checked);
-	// };
 
 	const handleIntervalChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		setTaskNotificationInterval(Number(e.target.value));
 	};
 
 	const handleSettingsChange = () => {
-		// Здесь можно добавить логику сохранения настроек, например, отправку на сервер
 		console.log({
 			enableNotifications,
 			taskEnabled,
@@ -162,7 +88,6 @@ const NotificationsDropdown = ({ onClose }: { onClose: () => void }) => {
 			closeNotification(id);
 		} catch (error) {
 			console.error('Не удалось закрыть уведомление: ', error);
-			// Здесь можно добавить уведомление пользователю, например через toast
 		}
 	};
 
@@ -321,7 +246,7 @@ const NotificationsDropdown = ({ onClose }: { onClose: () => void }) => {
 	};
 
 	return (
-		<div className="absolute right-0 mt-6 mr-6 w-80 bg-white shadow-lg rounded-lg p-5 z-50 border border-gray-200">
+		<div className="absolute right-0 top-full mt-2 w-80 bg-white shadow-lg rounded-lg p-5 z-50 border border-gray-200">
 			<div className="flex justify-between items-center mb-2">
 				<h3 className="text-lg font-semibold text-gray-900 ml-1">Уведомления</h3>
 				<button

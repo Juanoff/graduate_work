@@ -67,20 +67,23 @@ export const useTaskStore = create<TaskState>((set) => ({
 			};
 		}),
 	addTask: (task) =>
-		set((state) => ({
-			tasks: [
-				...state.tasks,
-				{
-					...task,
-					category: task.categoryId
-						? state.categories.find((cat) => cat.id === task.categoryId)
-						: undefined,
-				},
-			],
-		})),
+		set((state) => {
+			const newTask = {
+				...task,
+				category: task.categoryId
+					? state.categories.find((cat) => cat.id === task.categoryId)
+					: undefined,
+			};
+
+			return {
+				tasks: [...state.tasks, newTask],
+				filteredTasks: [...state.filteredTasks, newTask],
+			};
+		}),
 	deleteTask: (taskId) =>
 		set((state) => ({
 			tasks: state.tasks.filter((task) => task.id !== taskId),
+			filteredTasks: state.filteredTasks.filter((task) => task.id !== taskId),
 		})),
 	updateTaskAccessLevel: (taskId, newAccessLevel) =>
 		set((state) => ({
