@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/context/useAuth";
+import Link from "next/link";
 
 const LoginForm = () => {
 	const [username, setUsername] = useState("");
@@ -12,15 +13,13 @@ const LoginForm = () => {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!auth) {
-			setError("Контекст авторизации недоступен");
+			setError("The authorization context is unavailable.");
 			return;
 		}
 
-		console.log("Submitting login form with:", { username, password });
 		const success = await auth.login(username, password);
-		console.log("Login result:", success);
 		if (!success) {
-			setError("Неверные данные!");
+			setError("Incorrect data.");
 		} else {
 			console.log("Login successful, redirecting...");
 		}
@@ -53,12 +52,12 @@ const LoginForm = () => {
 
 				<div className="mt-4 text-center">
 					<span className="text-gray-600">Нет аккаунта?</span>
-					<button
+					<Link
+						href="/register"
 						className="ml-2 text-blue-500 hover:underline"
-						onClick={() => alert("Перейти на страницу регистрации")}
 					>
 						Зарегистрироваться
-					</button>
+					</Link>
 				</div>
 			</div>
 		</div>

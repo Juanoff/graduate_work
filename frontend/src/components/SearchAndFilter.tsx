@@ -326,7 +326,7 @@ export default function SearchAndFilter({ categories }: SearchAndFilterProps) {
 									className="flex items-center bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm"
 								>
 									<span>
-										{key === 'status' && (value === StatusType.TO_DO ? 'К выполнению' : value === StatusType.IN_PROGRESS ? 'В процессе' : 'Выполнено')}
+										{key === 'status' && (value === StatusType.TO_DO ? 'В ожидании' : value === StatusType.IN_PROGRESS ? 'В процессе' : 'Выполнено')}
 										{key === 'priority' && (value === Priority.LOW ? 'Низкий' : value === Priority.MEDIUM ? 'Средний' : 'Высокий')}
 										{key === 'categoryId' && categories.find((c) => c.id === Number(value))?.name}
 										{key === 'dueDateFilter' && (value === 'today' ? 'Сегодня' : value === 'week' ? 'На неделе' : value === 'overdue' ? 'Просроченные' : 'Без даты')}
