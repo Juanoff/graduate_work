@@ -3,7 +3,6 @@ package edu.juanoff.taskmanager.service;
 import edu.juanoff.taskmanager.dto.achievement.AchievementRequestDTO;
 import edu.juanoff.taskmanager.dto.achievement.AchievementResponseDTO;
 import edu.juanoff.taskmanager.entity.Achievement;
-import edu.juanoff.taskmanager.entity.User;
 import edu.juanoff.taskmanager.event.AchievementCreatedEvent;
 import edu.juanoff.taskmanager.mapper.AchievementMapper;
 import edu.juanoff.taskmanager.repository.AchievementRepository;

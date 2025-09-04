@@ -56,9 +56,13 @@ public class NotificationScheduler {
     public void checkUpcomingTasks() {
         long maxIntervalMinutes = userService.getMaxTaskNotificationInterval();
         LocalDateTime now = LocalDateTime.now();
+        log.info("NOW: {}", now);
         LocalDateTime threshold = now.plusMinutes(maxIntervalMinutes);
+        log.info("THRESHOLD: {}", threshold);
 
         List<Task> upcomingTasks = taskService.getAllNotNotifiedUpcomingTasks(now, threshold);
+        log.info("Upcoming tasks: {}", upcomingTasks);
+
         log.info("Found {} upcoming tasks within {} minutes to process", upcomingTasks.size(), maxIntervalMinutes);
 
         List<TaskWithUsers> tasksWithUsers = upcomingTasks.stream()

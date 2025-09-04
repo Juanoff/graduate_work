@@ -43,6 +43,7 @@ export default function SettingsPage() {
 		}
 	}, [searchParams]);
 
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const handleConnect = async () => {
 		try {
 			const res = await fetch(
@@ -214,7 +215,7 @@ export default function SettingsPage() {
 					</div>
 				) : (
 					<button
-						onClick={handleConnect}
+						onClick={() => toast("Интеграция с Google Calendar в разработке")}
 						className="flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
 					>
 						<Image
