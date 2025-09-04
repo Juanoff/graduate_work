@@ -26,6 +26,7 @@ public class NotificationProcessingService {
     public void processTaskNotifications(Task task, List<User> usersWithAccess) {
         try {
             log.debug("Task {} has {} users with access", task.getId(), usersWithAccess.size());
+            log.info("Reach method: processTaskNotifications");
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime dueDate = task.getDueDate();
             Long ownerId = task.getUser().getId();
@@ -33,17 +34,25 @@ public class NotificationProcessingService {
             for (User user : usersWithAccess) {
                 UserSettings settings = user.getSettings();
                 NotificationSettings ns = settings.getNotificationSettingsObj();
+                log.info("SUCCESS GET SETTINGS USER: {}", ns);
                 if (!ns.isTaskEnabled()) {
+                    log.info("TASK IS NOT ENABLED");
                     continue;
                 }
 
                 long intervalMinutes = ns.getTaskNotificationInterval();
+                log.info("INTERVAL MINUTES: {}", intervalMinutes);
                 LocalDateTime userThreshold = now.plusMinutes(intervalMinutes);
+                log.info("USER THRESHOLD: {}", userThreshold);
 
                 if (dueDate.isAfter(now) && dueDate.isBefore(userThreshold)) {
+                    log.info("TASK IN INTERVAL IS GOOD...");
                     notificationService.createNotificationForTask(task, user);
                     if (Objects.equals(user.getId(), ownerId)) {
+                        log.info("IT IS OWNER. SET TASK NOTIFIED");
                         taskService.setTaskNotified(task);
+                    } else {
+                        log.info("IT IS NOT OWNER. SET TASK NOT NOTIFIED");
                     }
                 }
             }

@@ -65,18 +65,23 @@ public class NotificationScheduler {
                 .map(task -> new TaskWithUsers(task, getUsersWithAccess(task)))
                 .toList();
 
+        log.info("Upcoming tasks and users: {}", tasksWithUsers);
+
         tasksWithUsers.forEach(taskWithUsers -> {
             if (semaphore.tryAcquire()) {
+                log.info("Try acquire semaphore...");
                 taskExecutor.execute(() -> {
                     try {
                         notificationProcessingService.processTaskNotifications(taskWithUsers.task(), taskWithUsers.users());
                     } finally {
+                        log.info("Execute method processTaskNotifications...");
                         semaphore.release();
                     }
                 });
             } else {
                 log.debug("Concurrency limit reached for task {}", taskWithUsers.task().getId());
             }
+            log.info("Go next tasks and users...");
         });
     }
 
@@ -94,6 +99,8 @@ public class NotificationScheduler {
             Hibernate.initialize(user.getSettings());
             users.add(user);
         });
+
+        log.info("method: getUsersWithAccess. Task accesses: {}", taskAccesses);
 
         return users.stream().distinct().toList();
     }

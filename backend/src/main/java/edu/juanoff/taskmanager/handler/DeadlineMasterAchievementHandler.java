@@ -17,16 +17,12 @@ public class DeadlineMasterAchievementHandler implements AchievementHandler {
 
     @Override
     public void handle(UserAchievement userAchievement, TaskResponseDTO curTask, Task newTask, String action) {
-        System.out.println("YEEES");
         if (!AchievementAction.COMPLETE.equals(action) || newTask.getParentTask() != null) {
             return;
         }
-        System.out.println("LOL");
 
         if (!Task.StatusType.DONE.equals(curTask.status()) && Task.StatusType.DONE.equals(newTask.getStatus())) {
-            System.out.println("GOOD WAY");
             if (newTask.getDueDate() != null && LocalDateTime.now().isBefore(newTask.getDueDate())) {
-                System.out.println("NIIICEEEE");
                 achievementProgressService.incrementProgress(userAchievement, userAchievement.getAchievement().getTargetValue());
             }
         } else if (Task.StatusType.DONE.equals(curTask.status())

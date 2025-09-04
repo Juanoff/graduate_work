@@ -34,6 +34,8 @@ public class NotificationService {
             return;
         }
 
+        log.info("Reach method: createNotificationForTask");
+
         NotificationMetadata metadata = new NotificationMetadata(
                 task.getId().toString(), task.getTitle(),
                 task.getDueDate().format(DateTimeFormatter.ofPattern("HH:mm")),
@@ -186,6 +188,8 @@ public class NotificationService {
 
     @Transactional
     private Notification saveNotification(User user, Notification.Type type, NotificationMetadata metadata) {
+        log.info("Reach method: saveNotification");
+
         Notification notification = Notification.builder()
                 .user(user)
                 .type(type)
@@ -197,12 +201,14 @@ public class NotificationService {
 
     private void sendNotificationToUser(Notification notification) {
         try {
+            log.info("Reach method: sendNotificationToUser");
             NotificationResponseDTO notificationDTO = NotificationResponseDTO.fromEntity(notification);
             messagingTemplate.convertAndSendToUser(
                     notification.getUser().getUsername(),
                     "/topic/notifications",
                     notificationDTO
             );
+            log.info("Success send in method: sendNotificationToUser");
         } catch (Exception e) {
             log.error("Failed to send notification for achievement {}: {}", notification.getId(), e.getMessage());
         }
