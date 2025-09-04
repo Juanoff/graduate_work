@@ -56,7 +56,7 @@ export default function AchievementsPage() {
 
 	const fetchUserAchievements = useCallback(async () => {
 		try {
-			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me/achievements`, {
+			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user-achievements/me`, {
 				credentials: "include",
 			});
 
@@ -113,7 +113,6 @@ export default function AchievementsPage() {
 			});
 
 			if (response.ok) {
-				// const createdAchievement: Achievement = await response.json();
 				await fetchAchievements();
 				setIsCreateModalOpen(false);
 				setNewAchievement({ name: "", description: "", targetValue: 0 });

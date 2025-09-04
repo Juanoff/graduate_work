@@ -4,9 +4,11 @@ import edu.juanoff.taskmanager.dto.achievement.AchievementRequestDTO;
 import edu.juanoff.taskmanager.dto.achievement.AchievementResponseDTO;
 import edu.juanoff.taskmanager.entity.Achievement;
 import edu.juanoff.taskmanager.entity.User;
+import edu.juanoff.taskmanager.event.AchievementCreatedEvent;
 import edu.juanoff.taskmanager.mapper.AchievementMapper;
 import edu.juanoff.taskmanager.repository.AchievementRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,18 +21,14 @@ public class AchievementService {
 
     private final AchievementRepository achievementRepository;
     private final AchievementMapper achievementMapper;
-    private final UserService userService;
-    private final UserAchievementService userAchievementService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public AchievementResponseDTO createAchievement(AchievementRequestDTO requestDTO) {
         Achievement achievement = achievementMapper.toEntity(requestDTO);
         Achievement savedAchievement = achievementRepository.save(achievement);
 
-        List<User> users = userService.getAllUsers();
-        for (User user : users) {
-            userAchievementService.createUserAchievement(user, savedAchievement);
-        }
+        eventPublisher.publishEvent(new AchievementCreatedEvent(savedAchievement));
 
         return achievementMapper.toDto(achievementRepository.save(achievement));
     }
@@ -39,6 +37,12 @@ public class AchievementService {
     public List<AchievementResponseDTO> getAllAchievements() {
         return StreamSupport.stream(achievementRepository.findAll().spliterator(), false)
                 .map(achievementMapper::toDto)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Achievement> getAllAchievementEntities() {
+        return StreamSupport.stream(achievementRepository.findAll().spliterator(), false)
                 .toList();
     }
 }

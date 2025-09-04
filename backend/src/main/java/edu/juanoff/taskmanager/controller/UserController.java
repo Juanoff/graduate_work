@@ -1,9 +1,11 @@
 package edu.juanoff.taskmanager.controller;
 
 import edu.juanoff.taskmanager.dto.notification.NotificationSettingsRequestDTO;
-import edu.juanoff.taskmanager.dto.user.*;
+import edu.juanoff.taskmanager.dto.user.UserInfoResponseDTO;
+import edu.juanoff.taskmanager.dto.user.UserProfileResponseDTO;
+import edu.juanoff.taskmanager.dto.user.UserSearchDTO;
+import edu.juanoff.taskmanager.dto.user.UserUpdateRequestDTO;
 import edu.juanoff.taskmanager.security.UserDetailsImpl;
-import edu.juanoff.taskmanager.service.UserAchievementService;
 import edu.juanoff.taskmanager.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +27,6 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final UserAchievementService userAchievementService;
 
     @GetMapping("/all")
     public ResponseEntity<List<UserInfoResponseDTO>> getAllUsers() {
@@ -47,23 +48,6 @@ public class UserController {
     ) {
         UserProfileResponseDTO user = userService.getUserProfileResponseDTOByUsername(username);
         return ResponseEntity.ok(user);
-    }
-
-//    @PutMapping("/me")
-//    public ResponseEntity<UserResponseDTO> updateCurrentUser(
-//            @AuthenticationPrincipal UserDetailsImpl userDetails,
-//            @Valid @RequestBody UserRequestDTO dto
-//    ) {
-//        UserResponseDTO updatedUser = userService.updateUser(userDetails.id(), dto);
-//        return ResponseEntity.ok(updatedUser);
-//    }
-
-    @GetMapping("/me/achievements")
-    public ResponseEntity<List<UserAchievementResponseDTO>> getUserAchievements(
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        List<UserAchievementResponseDTO> achievements = userAchievementService.getUserAchievements(userDetails.id());
-        return ResponseEntity.ok(achievements);
     }
 
     @GetMapping("/me/notification-settings")

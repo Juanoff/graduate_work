@@ -2,18 +2,16 @@ package edu.juanoff.taskmanager.service;
 
 import edu.juanoff.taskmanager.dto.notification.NotificationSettingsRequestDTO;
 import edu.juanoff.taskmanager.dto.user.*;
-import edu.juanoff.taskmanager.entity.NotificationSettings;
 import edu.juanoff.taskmanager.entity.User;
-import edu.juanoff.taskmanager.entity.UserSettings;
+import edu.juanoff.taskmanager.event.UserCreatedEvent;
 import edu.juanoff.taskmanager.exception.BusinessLogicException;
-import edu.juanoff.taskmanager.mapper.NotificationSettingsMapper;
 import edu.juanoff.taskmanager.mapper.UserMapper;
 import edu.juanoff.taskmanager.repository.UserRepository;
-import edu.juanoff.taskmanager.repository.UserSettingsRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,9 +35,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
-    private final UserSettingsRepository userSettingsRepository;
-    private final NotificationSettingsMapper notificationSettingsMapper;
     private final TaskAccessService taskAccessService;
+    private final UserSettingsService userSettingsService;
+    private final ApplicationEventPublisher eventPublisher;
 
     // Константы для загрузки аватарок
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
@@ -58,7 +56,12 @@ public class UserService {
         User user = userMapper.toEntity(dto);
         user.setPasswordHash(passwordEncoder.encode(dto.password()));
 
-        return UserResponseDTO.fromEntity(userRepository.save(user));
+        userSettingsService.createDefaultSettings(user);
+
+        User savedUser = userRepository.save(user);
+        eventPublisher.publishEvent(new UserCreatedEvent(savedUser));
+
+        return UserResponseDTO.fromEntity(savedUser);
     }
 
     @Transactional
@@ -67,7 +70,7 @@ public class UserService {
 
         boolean emailChanged = !Objects.equals(dto.email(), existingUser.getEmail());
         if (emailChanged && userRepository.existsByEmail(dto.email())) {
-            throw new BusinessLogicException("Email already taken");
+            throw new BusinessLogicException("Email уже существует");
         }
 
         boolean hasChanges = !dto.username().equals(existingUser.getUsername()) ||
@@ -139,28 +142,6 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<UserInfoResponseDTO> getAllUsersInfoResponseDTO() {
         return userRepository.findAllWithSettings().stream().map(UserInfoResponseDTO::fromEntity).toList();
-    }
-
-    @Transactional
-    public void updateNotificationSettings(Long userId, NotificationSettingsRequestDTO ns) {
-        NotificationSettings notificationSettings = notificationSettingsMapper.toEntity(ns);
-        UserSettings userSettings = getUserSettingsByUserId(userId);
-        boolean success = userSettings.setNotificationSettingsObj(notificationSettings);
-        if (!success) {
-            throw new BusinessLogicException("Couldn't save notification settings");
-        }
-        userSettingsRepository.save(userSettings);
-    }
-
-    @Transactional(readOnly = true)
-    public UserSettings getUserSettingsByUserId(Long userId) {
-        return userSettingsRepository.findByUserId(userId)
-                .orElseGet(() -> {
-                    User user = getUserById(userId);
-                    return UserSettings.builder()
-                            .user(user)
-                            .build();
-                });
     }
 
     @Transactional(readOnly = true)
@@ -294,5 +275,11 @@ public class UserService {
         }
 
         return users;
+    }
+
+    @Transactional
+    public void updateNotificationSettings(Long userId, NotificationSettingsRequestDTO request) {
+        User user = getUserById(userId);
+        userSettingsService.updateNotificationSettings(user, request);
     }
 }

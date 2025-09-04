@@ -4,12 +4,15 @@ import edu.juanoff.taskmanager.dto.user.UserAchievementResponseDTO;
 import edu.juanoff.taskmanager.entity.Achievement;
 import edu.juanoff.taskmanager.entity.User;
 import edu.juanoff.taskmanager.entity.UserAchievement;
+import edu.juanoff.taskmanager.event.AchievementCreatedEvent;
 import edu.juanoff.taskmanager.event.AchievementsUpdatedEvent;
+import edu.juanoff.taskmanager.event.UserCreatedEvent;
 import edu.juanoff.taskmanager.handler.*;
 import edu.juanoff.taskmanager.mapper.UserAchievementMapper;
 import edu.juanoff.taskmanager.repository.UserAchievementRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,9 @@ public class UserAchievementService {
     private final UserAchievementMapper userAchievementMapper;
     private final List<AchievementHandler> achievementHandlerList;
     private Map<String, AchievementHandler> achievementHandlers;
+
+    private final UserService userService;
+    private final AchievementService achievementService;
 
     @PostConstruct
     public void initAchievementHandlers() {
@@ -76,6 +82,24 @@ public class UserAchievementService {
                     userAchievementRepository.save(userAchievement);
                 }
             }
+        }
+    }
+
+    @EventListener
+    @Transactional
+    public void handleAchievementCreated(AchievementCreatedEvent event) {
+        List<User> users = userService.getAllUsers();
+        for (User user : users) {
+            createUserAchievement(user, event.achievement());
+        }
+    }
+
+    @EventListener
+    @Transactional
+    public void handleUserCreated(UserCreatedEvent event) {
+        List<Achievement> achievements = achievementService.getAllAchievementEntities();
+        for (Achievement achievement : achievements) {
+            createUserAchievement(event.user(), achievement);
         }
     }
 }
