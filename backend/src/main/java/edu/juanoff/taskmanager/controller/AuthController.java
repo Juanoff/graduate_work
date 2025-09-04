@@ -1,11 +1,11 @@
 package edu.juanoff.taskmanager.controller;
 
 import edu.juanoff.taskmanager.dto.LoginRequestDTO;
-import edu.juanoff.taskmanager.dto.RegisterRequestDTO;
+import edu.juanoff.taskmanager.dto.user.UserRequestDTO;
 import edu.juanoff.taskmanager.dto.user.UserResponseDTO;
 import edu.juanoff.taskmanager.entity.User;
-import edu.juanoff.taskmanager.repository.UserRepository;
 import edu.juanoff.taskmanager.security.UserDetailsImpl;
+import edu.juanoff.taskmanager.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,34 +19,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequestDTO request) {
-        if (userRepository.existsByUsername(request.username())) {
-            return ResponseEntity.badRequest().body("Username уже используется");
-        }
-        if (userRepository.existsByEmail(request.email())) {
-            return ResponseEntity.badRequest().body("Email уже используется");
-        }
-
-        User newUser = User.builder()
-                .username(request.username())
-                .email(request.email())
-                .passwordHash(passwordEncoder.encode(request.password()))
-                .role(User.Role.USER)
-                .build();
-        userRepository.save(newUser);
-
+    public ResponseEntity<String> register(@Valid @RequestBody UserRequestDTO request) {
+        userService.createUser(request);
         return ResponseEntity.status(HttpStatus.CREATED).body("Пользователь успешно зарегистрирован");
     }
 
@@ -58,9 +42,8 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        Optional<User> user = userRepository.findByUsername(loginRequest.username());
-        return user.map(u -> ResponseEntity.ok(UserResponseDTO.fromEntity(u)))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+        User user = userService.getUserByUsername(loginRequest.username());
+        return ResponseEntity.ok(UserResponseDTO.fromEntity(user));
     }
 
     // Сохраняем контекст в сессии вручную
@@ -83,8 +66,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        Optional<User> user = userRepository.findByUsername(userDetails.username());
-        return user.map(value -> ResponseEntity.ok(UserResponseDTO.fromEntity(value)))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        User user = userService.getUserByUsername(userDetails.username());
+        return ResponseEntity.ok(UserResponseDTO.fromEntity(user));
     }
 }

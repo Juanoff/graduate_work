@@ -49,11 +49,15 @@ public class UserService {
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO dto) {
         if (userRepository.existsByEmail(dto.email())) {
-            throw new BusinessLogicException("Email already registered");
+            throw new BusinessLogicException("Email уже существует");
+        }
+        if (userRepository.existsByUsername(dto.username())) {
+            throw new BusinessLogicException("Username уже существует");
         }
 
         User user = userMapper.toEntity(dto);
         user.setPasswordHash(passwordEncoder.encode(dto.password()));
+
         return UserResponseDTO.fromEntity(userRepository.save(user));
     }
 
@@ -190,7 +194,7 @@ public class UserService {
     private void updateProfile(User user, String username, String bio) {
         if (StringUtils.hasText(username) && !username.equals(user.getUsername())) {
             if (userRepository.existsByUsername(username)) {
-                throw new IllegalArgumentException("Username already exists");
+                throw new IllegalArgumentException("Username уже существует");
             }
             user.setUsername(username);
         }
@@ -203,10 +207,9 @@ public class UserService {
     private void updateEmail(User user, String email) {
         if (email != null && !email.equals(user.getEmail())) {
             if (userRepository.existsByEmail(email)) {
-                throw new IllegalArgumentException("Email already exists");
+                throw new IllegalArgumentException("Email уже существует");
             }
             user.setEmail(email);
-            // TODO: Отправить письмо для подтверждения нового email
         }
     }
 
@@ -226,12 +229,9 @@ public class UserService {
 
     @Transactional
     public String uploadAvatar(Long userId, MultipartFile file) throws IOException {
-        User user = getUserById(userId);
-
         if (file.isEmpty()) {
             throw new IllegalArgumentException("File cannot be empty");
         }
-
         if (file.getSize() > MAX_FILE_SIZE) {
             throw new IllegalArgumentException("File size exceeds maximum limit of 5MB");
         }
@@ -255,6 +255,7 @@ public class UserService {
         Path filePath = uploadPath.resolve(uniqueFileName);
         Files.write(filePath, file.getBytes());
 
+        User user = getUserById(userId);
         if (user.getAvatarUrl() != null) {
             Path oldFilePath = Paths.get(user.getAvatarUrl());
             if (Files.exists(oldFilePath)) {
@@ -293,11 +294,5 @@ public class UserService {
         }
 
         return users;
-    }
-
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(
-                () -> new EntityNotFoundException("User not found with email: " + email)
-        );
     }
 }
