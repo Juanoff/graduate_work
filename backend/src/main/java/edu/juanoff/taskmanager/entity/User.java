@@ -61,7 +61,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<TaskAssignment> assignments = new ArrayList<>();
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private UserSettings settings;
 
     public enum Role {
@@ -83,4 +83,10 @@ public class User {
     }
 
     // Constructors, Getters and Setters
+    public void setSettings(UserSettings settings) {
+        this.settings = settings;
+        if (settings != null) {
+            settings.setUser(this);
+        }
+    }
 }

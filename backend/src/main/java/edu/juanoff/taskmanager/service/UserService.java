@@ -3,6 +3,7 @@ package edu.juanoff.taskmanager.service;
 import edu.juanoff.taskmanager.dto.notification.NotificationSettingsRequestDTO;
 import edu.juanoff.taskmanager.dto.user.*;
 import edu.juanoff.taskmanager.entity.User;
+import edu.juanoff.taskmanager.entity.UserSettings;
 import edu.juanoff.taskmanager.event.UserCreatedEvent;
 import edu.juanoff.taskmanager.exception.BusinessLogicException;
 import edu.juanoff.taskmanager.mapper.UserMapper;
@@ -56,9 +57,11 @@ public class UserService {
         User user = userMapper.toEntity(dto);
         user.setPasswordHash(passwordEncoder.encode(dto.password()));
 
-        userSettingsService.createDefaultSettings(user);
+        UserSettings us = userSettingsService.createDefaultSettings(user);
+        user.setSettings(us);
 
         User savedUser = userRepository.save(user);
+
         eventPublisher.publishEvent(new UserCreatedEvent(savedUser));
 
         return UserResponseDTO.fromEntity(savedUser);

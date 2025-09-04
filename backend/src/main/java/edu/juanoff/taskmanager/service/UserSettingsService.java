@@ -19,7 +19,7 @@ public class UserSettingsService {
     private final NotificationSettingsMapper notificationSettingsMapper;
 
     @Transactional
-    public void createDefaultSettings(User user) {
+    public UserSettings createDefaultSettings(User user) {
         NotificationSettings defaultNotification = new NotificationSettings();
 
         UserSettings settings = UserSettings.builder()
@@ -27,7 +27,7 @@ public class UserSettingsService {
                 .build();
         settings.setNotificationSettingsObj(defaultNotification);
 
-        userSettingsRepository.save(settings);
+        return settings;
     }
 
     @Transactional
