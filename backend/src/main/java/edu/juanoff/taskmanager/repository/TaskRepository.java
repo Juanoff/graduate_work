@@ -9,6 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -47,8 +48,8 @@ public interface TaskRepository extends CrudRepository<Task, Long>, JpaSpecifica
 
     @Query("SELECT t FROM Task t WHERE t.dueDate BETWEEN :start AND :end AND t.notified = false AND t.completedAt IS NULL")
     List<Task> findByDueDateBetweenAndNotifiedFalse(
-            @Param("start") LocalDateTime start,
-            @Param("end") LocalDateTime end
+            @Param("start") Instant start,
+            @Param("end") Instant end
     );
 
     @Query("select t from Task t join fetch t.user where t.id = :taskId")
