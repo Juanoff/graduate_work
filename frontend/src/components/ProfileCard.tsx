@@ -21,6 +21,7 @@ export function ProfileCard({ user, isPublic = false, canEditAvatar = false }: P
 			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me/upload-avatar`, {
 				method: 'POST',
 				body: formData,
+				credentials: 'include'
 			});
 
 			const data = await res.json();
