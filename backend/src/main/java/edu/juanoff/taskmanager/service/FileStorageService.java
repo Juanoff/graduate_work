@@ -1,14 +1,15 @@
 package edu.juanoff.taskmanager.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,14 +23,23 @@ public class FileStorageService {
     @Value("${app.backend-url}")
     private String backendUrl;
 
-    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
+    @Value("${app.upload.max-file-size}")
+    private String maxFileSizeProperty;
+    private long maxFileSize;
+
+    @PostConstruct
+    public void init() {
+        this.maxFileSize = DataSize.parse(maxFileSizeProperty).toBytes();
+    }
+
     private static final Set<String> ALLOWED_MIME_TYPES = Set.of("image/jpeg", "image/png", "image/gif");
+    private static final Tika tika = new Tika();
 
     public String storeFile(Long entityId, MultipartFile file, String uploadDir, String oldFileUrl) throws IOException {
         if (file.isEmpty()) {
             throw new IllegalArgumentException("File cannot be empty");
         }
-        if (file.getSize() > MAX_FILE_SIZE) {
+        if (file.getSize() > maxFileSize) {
             throw new IllegalArgumentException("File size exceeds maximum limit of 5MB");
         }
 
@@ -73,11 +83,9 @@ public class FileStorageService {
     }
 
     private void validateMimeType(MultipartFile file) throws IOException {
-        try (InputStream is = file.getInputStream()) {
-            String mimeType = URLConnection.guessContentTypeFromStream(is);
-            if (mimeType == null || !ALLOWED_MIME_TYPES.contains(mimeType)) {
-                throw new IllegalArgumentException("Invalid file type: " + mimeType);
-            }
+        String mimeType = tika.detect(file.getInputStream());
+        if (!ALLOWED_MIME_TYPES.contains(mimeType)) {
+            throw new IllegalArgumentException("Invalid file type: " + mimeType);
         }
     }
 

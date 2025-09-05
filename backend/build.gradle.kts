@@ -67,4 +67,7 @@ dependencies {
     implementation("io.github.resilience4j:resilience4j-spring-boot3:2.3.0")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+
+    // https://mvnrepository.com/artifact/org.apache.tika/tika-core
+    implementation("org.apache.tika:tika-core:3.2.2")
 }
