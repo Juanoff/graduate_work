@@ -1,44 +1,54 @@
 "use client";
 
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { registrationSchema, RegistrationFormData } from "@/schemas/registrationSchema";
 
 const RegistrationForm = () => {
-	const [username, setUsername] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
-	const [error, setError] = useState("");
+	const [serverError, setServerError] = useState<string | null>(null);
 	const [success, setSuccess] = useState("");
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setError("");
-		setSuccess("");
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isSubmitting },
+		reset,
+	} = useForm<RegistrationFormData>({
+		resolver: zodResolver(registrationSchema),
+	});
 
-		if (password !== confirmPassword) {
-			setError("Пароли не совпадают");
-			return;
-		}
+	const onSubmit = async (data: RegistrationFormData) => {
+		setServerError(null);
+		setSuccess("");
 
 		try {
 			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ username, email, password }),
+				body: JSON.stringify({
+					username: data.username,
+					email: data.email,
+					password: data.password,
+				}),
 			});
 
 			if (response.ok) {
 				setSuccess("Регистрация успешна! Теперь войдите.");
-				setUsername("");
-				setEmail("");
-				setPassword("");
-				setConfirmPassword("");
+				reset();
 			} else {
-				const text = await response.text();
-				setError(text || "Ошибка при регистрации");
+				const errorData = await response.json().catch(() => null);
+
+				if (errorData?.errors) {
+					setServerError(Object.values(errorData.errors).join(", "));
+				} else if (errorData?.message) {
+					setServerError(errorData.message);
+				} else {
+					setServerError("Неизвестная ошибка при регистрации");
+				}
 			}
-		} catch (error) {
-			setError("Error: " + error);
+		} catch (err) {
+			setServerError("Ошибка: " + (err as Error).message);
 		}
 	};
 
@@ -46,48 +56,77 @@ const RegistrationForm = () => {
 		<div className="flex items-center justify-center h-screen bg-gray-100">
 			<div className="bg-white p-6 rounded-lg shadow-md w-96">
 				<h2 className="text-xl font-bold mb-4">Регистрация</h2>
-				{error && <p className="text-red-500 mb-2">{error}</p>}
+
+				{serverError && <p className="text-red-500 mb-2">{serverError}</p>}
 				{success && <p className="text-green-500 mb-2">{success}</p>}
-				<form onSubmit={handleSubmit}>
-					<input
-						type="text"
-						placeholder="Логин"
-						className="w-full p-2 border rounded mb-2"
-						value={username}
-						onChange={(e) => setUsername(e.target.value)}
-					/>
-					<input
-						type="email"
-						placeholder="Email"
-						className="w-full p-2 border rounded mb-2"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-					/>
-					<input
-						type="password"
-						placeholder="Пароль"
-						className="w-full p-2 border rounded mb-2"
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-					/>
-					<input
-						type="password"
-						placeholder="Подтвердите пароль"
-						className="w-full p-2 border rounded mb-2"
-						value={confirmPassword}
-						onChange={(e) => setConfirmPassword(e.target.value)}
-					/>
-					<button className="w-full bg-blue-500 text-white p-2 rounded">
-						Зарегистрироваться
+
+				<form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+					<div>
+						<input
+							type="text"
+							placeholder="Логин"
+							{...register("username")}
+							className={`w-full p-2 border rounded ${errors.username ? "border-red-500" : "border-gray-300"
+								}`}
+						/>
+						{errors.username && (
+							<p className="text-red-500 text-sm">{errors.username.message}</p>
+						)}
+					</div>
+
+					<div>
+						<input
+							type="email"
+							placeholder="Email"
+							{...register("email")}
+							className={`w-full p-2 border rounded ${errors.email ? "border-red-500" : "border-gray-300"
+								}`}
+						/>
+						{errors.email && (
+							<p className="text-red-500 text-sm">{errors.email.message}</p>
+						)}
+					</div>
+
+					<div>
+						<input
+							type="password"
+							placeholder="Пароль"
+							{...register("password")}
+							className={`w-full p-2 border rounded ${errors.password ? "border-red-500" : "border-gray-300"
+								}`}
+						/>
+						{errors.password && (
+							<p className="text-red-500 text-sm">{errors.password.message}</p>
+						)}
+					</div>
+
+					<div>
+						<input
+							type="password"
+							placeholder="Подтвердите пароль"
+							{...register("confirmPassword")}
+							className={`w-full p-2 border rounded ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
+								}`}
+						/>
+						{errors.confirmPassword && (
+							<p className="text-red-500 text-sm">
+								{errors.confirmPassword.message}
+							</p>
+						)}
+					</div>
+
+					<button
+						type="submit"
+						disabled={isSubmitting}
+						className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:opacity-50"
+					>
+						{isSubmitting ? "Загрузка..." : "Зарегистрироваться"}
 					</button>
 				</form>
 
 				<div className="mt-4 text-center">
 					<span className="text-gray-600">Уже есть аккаунт?</span>
-					<a
-						href="/login"
-						className="ml-2 text-blue-500 hover:underline"
-					>
+					<a href="/login" className="ml-2 text-blue-500 hover:underline">
 						Войти
 					</a>
 				</div>

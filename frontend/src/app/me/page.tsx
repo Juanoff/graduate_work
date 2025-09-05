@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { showOverdueToast } from "@/components/TaskCard";
 import Loading from "@/components/Loading";
-import { userUpdateSchema, UserUpdateForm } from "@/schemas/userUpdate";
+import { userUpdateSchema, UserUpdateForm } from "@/schemas/userUpdateSchema";
 
 const fetchUserProfile = async (): Promise<UserProfile> => {
 	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me`, {
@@ -100,7 +100,6 @@ export default function MePage() {
 	const currentPassword = watch("currentPassword");
 	const newPassword = watch("newPassword");
 
-	// Сбрасываем ошибки при очистке полей
 	useEffect(() => {
 		if (!currentPassword && !newPassword && editingField === "password") {
 			clearErrors(["currentPassword", "newPassword"]);
