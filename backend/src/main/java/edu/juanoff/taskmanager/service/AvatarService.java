@@ -12,7 +12,7 @@ public class AvatarService {
 
     private final FileStorageService fileStorageService;
 
-    private static final String UPLOAD_DIR = "uploads/avatars/";
+    private static final String UPLOAD_DIR = "uploads/avatars";
 
     public String uploadAvatar(Long userId, MultipartFile file, String oldAvatarUrl) throws IOException {
         return fileStorageService.storeFile(userId, file, UPLOAD_DIR, oldAvatarUrl);

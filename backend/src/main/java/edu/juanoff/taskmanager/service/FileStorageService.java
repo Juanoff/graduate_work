@@ -68,7 +68,7 @@ public class FileStorageService {
             deleteOldFile(oldFileUrl, uploadPath);
         }
 
-        return backendUrl + uploadDir + uniqueFileName;
+        return backendUrl + "/" + uploadDir + "/" + uniqueFileName;
     }
 
     public void deleteOldFile(String oldFileUrl, Path uploadPath) {
