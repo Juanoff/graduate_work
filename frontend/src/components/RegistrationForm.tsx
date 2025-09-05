@@ -2,12 +2,13 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { registrationSchema, RegistrationFormData } from "@/schemas/registrationSchema";
+import Link from "next/link";
 
 const RegistrationForm = () => {
 	const [serverError, setServerError] = useState<string | null>(null);
-	const [success, setSuccess] = useState("");
+	const [success, setSuccess] = useState<ReactNode>("");
 
 	const {
 		register,
@@ -34,7 +35,11 @@ const RegistrationForm = () => {
 			});
 
 			if (response.ok) {
-				setSuccess("Регистрация успешна! Теперь войдите.");
+				setSuccess(
+					<>
+						Регистрация успешна! Теперь <Link href="/login">войдите</Link>.
+					</>
+				);
 				reset();
 			} else {
 				const errorData = await response.json().catch(() => null);

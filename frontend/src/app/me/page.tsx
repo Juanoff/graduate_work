@@ -9,11 +9,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProfileCard } from "@/components/ProfileCard";
 import { useForm } from "react-hook-form";
 import { UserProfile } from "@/types/userProfile";
-import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { showOverdueToast } from "@/components/TaskCard";
 import Loading from "@/components/Loading";
 import { userUpdateSchema, UserUpdateForm } from "@/schemas/userUpdateSchema";
+import { showOverdueSuccessToast } from "@/utils/showOverdueSuccessToast";
 
 const fetchUserProfile = async (): Promise<UserProfile> => {
 	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me`, {
@@ -82,7 +82,7 @@ export default function MePage() {
 			setEditingField(null);
 			reset();
 			clearErrors();
-			toast.success("Профиль обновлен!");
+			showOverdueSuccessToast("Профиль обновлен!");
 		},
 		onError: (error: Error) => {
 			const message = error.message || "Произошла ошибка";
@@ -91,7 +91,7 @@ export default function MePage() {
 			} else if (message.includes("Email already exists")) {
 				showOverdueToast("Этот email уже занят");
 			} else {
-				toast.error(message, { duration: 4000 });
+				showOverdueToast(message);
 			}
 		},
 	});
