@@ -17,9 +17,8 @@ export function ProfileCard({ user, isPublic = false, canEditAvatar = false }: P
 		if (file) {
 			const formData = new FormData();
 			formData.append('avatar', file);
-			formData.append('userId', user.id.toString());
 
-			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/upload-avatar`, {
+			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me/upload-avatar`, {
 				method: 'POST',
 				body: formData,
 			});
