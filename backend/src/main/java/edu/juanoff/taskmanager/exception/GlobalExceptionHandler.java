@@ -21,7 +21,7 @@ import java.util.Map;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    //+ 404 - ResourceNotFoundException (кастомное исключение)
+    //+ 404 - ResourceNotFoundException
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleResourceNotFound(ResourceNotFoundException ex) {
         log.warn("Resource not found: {}", ex.getMessage());
