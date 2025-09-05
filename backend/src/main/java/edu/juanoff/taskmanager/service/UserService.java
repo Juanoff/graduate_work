@@ -12,7 +12,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,14 +20,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -40,14 +33,8 @@ public class UserService {
     private final UserMapper userMapper;
     private final TaskAccessService taskAccessService;
     private final UserSettingsService userSettingsService;
+    private final AvatarService avatarService;
     private final ApplicationEventPublisher eventPublisher;
-
-    @Value("${app.backend-url}")
-    private String backendUrl;
-
-    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
-    private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "gif");
-    private static final String UPLOAD_DIR = "uploads/avatars/";
 
     @Transactional
     public UserResponseDTO createUser(UserRequestDTO dto) {
@@ -179,6 +166,15 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
+    public String uploadAvatar(Long userId, MultipartFile file) throws IOException {
+        User user = getUserById(userId);
+        String avatarUrl = avatarService.uploadAvatar(userId, file, user.getAvatarUrl());
+        user.setAvatarUrl(avatarUrl);
+        userRepository.save(user);
+        return avatarUrl;
+    }
+
     private void updateProfile(User user, String username, String bio) {
         if (StringUtils.hasText(username) && !username.equals(user.getUsername())) {
             if (userRepository.existsByUsername(username)) {
@@ -213,60 +209,6 @@ public class UserService {
         }
 
         user.setPasswordHash(passwordEncoder.encode(newPassword));
-    }
-
-    @Transactional
-    public String uploadAvatar(Long userId, MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            throw new IllegalArgumentException("File cannot be empty");
-        }
-        if (file.getSize() > MAX_FILE_SIZE) {
-            throw new IllegalArgumentException("File size exceeds maximum limit of 5MB");
-        }
-
-        String originalFilename = file.getOriginalFilename();
-        if (originalFilename.isEmpty()) {
-            throw new IllegalArgumentException("Invalid file name");
-        }
-
-        String fileExtension = getFileExtension(originalFilename).toLowerCase();
-        if (!ALLOWED_EXTENSIONS.contains(fileExtension)) {
-            throw new IllegalArgumentException("Only JPG, JPEG, PNG, and GIF files are allowed");
-        }
-
-        Path uploadPath = Paths.get(UPLOAD_DIR);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        String uniqueFileName = UUID.randomUUID() + "_" + userId + "." + fileExtension;
-        Path filePath = uploadPath.resolve(uniqueFileName);
-        Files.write(filePath, file.getBytes());
-
-        User user = getUserById(userId);
-
-        if (user.getAvatarUrl() != null) {
-            try {
-                String oldFileName = Paths.get(new URI(user.getAvatarUrl()).getPath()).getFileName().toString();
-                Path oldFilePath = uploadPath.resolve(oldFileName);
-                if (Files.exists(oldFilePath)) {
-                    Files.delete(oldFilePath);
-                }
-            } catch (Exception ignored) {
-                // пропускаем ошибку в старом пути файла...
-            }
-        }
-
-        String avatarUrl = backendUrl + UPLOAD_DIR + uniqueFileName;
-        user.setAvatarUrl(avatarUrl);
-        userRepository.save(user);
-
-        return avatarUrl;
-    }
-
-    private String getFileExtension(String filename) {
-        int dotIndex = filename.lastIndexOf('.');
-        return dotIndex == -1 ? "" : filename.substring(dotIndex + 1);
     }
 
     public List<UserSearchDTO> searchUsers(String search, Long taskId, Long userId) {

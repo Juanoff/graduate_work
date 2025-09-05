@@ -1,6 +1,5 @@
 package edu.juanoff.taskmanager.service;
 
-import edu.juanoff.taskmanager.entity.NotificationMetadata;
 import edu.juanoff.taskmanager.dto.notification.NotificationResponseDTO;
 import edu.juanoff.taskmanager.dto.task.TaskUpdateDTO;
 import edu.juanoff.taskmanager.entity.*;
