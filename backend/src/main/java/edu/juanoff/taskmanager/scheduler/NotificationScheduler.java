@@ -15,8 +15,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,13 +55,10 @@ public class NotificationScheduler {
     @Scheduled(fixedRateString = "${scheduler.notification.check-rate}")
     public void checkUpcomingTasks() {
         long maxIntervalMinutes = userService.getMaxTaskNotificationInterval();
-        Instant nowUtc = Instant.now();
-        Instant thresholdUtc = nowUtc.plus(Duration.ofMinutes(maxIntervalMinutes));
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime threshold = now.plusMinutes(maxIntervalMinutes);
 
-        log.info("NOW UTC: {}", nowUtc);
-        log.info("THRESHOLD UTC: {}", thresholdUtc);
-
-        List<Task> upcomingTasks = taskService.getAllNotNotifiedUpcomingTasks(nowUtc, thresholdUtc);
+        List<Task> upcomingTasks = taskService.getAllNotNotifiedUpcomingTasks(now, threshold);
         log.info("Upcoming tasks: {}", upcomingTasks);
 
         log.info("Found {} upcoming tasks within {} minutes to process", upcomingTasks.size(), maxIntervalMinutes);

@@ -21,7 +21,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -332,7 +331,7 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
-    public List<Task> getAllNotNotifiedUpcomingTasks(Instant start, Instant end) {
+    public List<Task> getAllNotNotifiedUpcomingTasks(LocalDateTime start, LocalDateTime end) {
         return taskRepository.findByDueDateBetweenAndNotifiedFalse(start, end);
     }
 
