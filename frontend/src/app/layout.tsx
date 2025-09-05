@@ -170,15 +170,6 @@ export default function RootLayout({
 											<UserIcon className="w-6 h-6 mr-2" />
 											Профиль
 										</Link>
-										<Link
-											href="/tasks"
-											className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/tasks" && "font-bold text-blue-600"
-												}`}
-											onClick={toggleMobileMenu}
-										>
-											<ClipboardDocumentListIcon className="w-6 h-6 mr-2" />
-											Задачи
-										</Link>
 										<button
 											onClick={handleBellClick}
 											className="text-gray-700 hover:text-blue-600 flex items-center"

@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import { showOverdueToast } from "@/components/TaskCard";
 
 export default function SettingsPage() {
 	const [isConnected, setIsConnected] = useState(false);
@@ -215,7 +216,7 @@ export default function SettingsPage() {
 					</div>
 				) : (
 					<button
-						onClick={() => toast("Интеграция с Google Calendar в разработке")}
+						onClick={() => showOverdueToast("Интеграция с Google Calendar в разработке")}
 						className="flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
 					>
 						<Image

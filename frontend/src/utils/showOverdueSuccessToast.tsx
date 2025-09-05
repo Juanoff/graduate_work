@@ -3,11 +3,11 @@ import { XCircleIcon } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
 
 export const showOverdueSuccessToast = debounce((
-	error: string,
+	message: string,
 	duration: number = 3000,
 	iconSize: number = 25,
 ) => {
-	toast.error(error, {
+	toast.success(message, {
 		duration: duration,
 		style: {
 			borderRadius: "12px",
