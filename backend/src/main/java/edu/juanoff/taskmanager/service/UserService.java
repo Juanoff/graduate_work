@@ -12,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,8 +42,10 @@ public class UserService {
     private final UserSettingsService userSettingsService;
     private final ApplicationEventPublisher eventPublisher;
 
-    // Константы для загрузки аватарок
-    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
+    @Value("${app.backend-url}")
+    private String backendUrl;
+
+    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
     private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "gif");
     private static final String UPLOAD_DIR = "uploads/avatars/";
 
@@ -240,14 +244,20 @@ public class UserService {
         Files.write(filePath, file.getBytes());
 
         User user = getUserById(userId);
+
         if (user.getAvatarUrl() != null) {
-            Path oldFilePath = Paths.get(user.getAvatarUrl());
-            if (Files.exists(oldFilePath)) {
-                Files.delete(oldFilePath);
+            try {
+                String oldFileName = Paths.get(new URI(user.getAvatarUrl()).getPath()).getFileName().toString();
+                Path oldFilePath = uploadPath.resolve(oldFileName);
+                if (Files.exists(oldFilePath)) {
+                    Files.delete(oldFilePath);
+                }
+            } catch (Exception ignored) {
+                // пропускаем ошибку в старом пути файла...
             }
         }
 
-        String avatarUrl = UPLOAD_DIR + uniqueFileName;
+        String avatarUrl = backendUrl + UPLOAD_DIR + uniqueFileName;
         user.setAvatarUrl(avatarUrl);
         userRepository.save(user);
 

@@ -76,12 +76,12 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/upload-avatar")
+    @PostMapping("/me/upload-avatar")
     public ResponseEntity<Map<String, String>> uploadAvatar(
-            @RequestParam("userId") Long userId,
-            @RequestParam("avatar") MultipartFile file
+            @RequestParam("avatar") MultipartFile file,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws IOException {
-        String avatarUrl = userService.uploadAvatar(userId, file);
+        String avatarUrl = userService.uploadAvatar(userDetails.id(), file);
         return ResponseEntity.ok(Map.of("url", avatarUrl));
     }
 
