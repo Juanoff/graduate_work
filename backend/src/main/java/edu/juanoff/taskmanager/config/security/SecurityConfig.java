@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/swagger-ui.html",
@@ -110,7 +111,8 @@ public class SecurityConfig {
                 "Content-Type",
                 "Expires",
                 "Last-Modified",
-                "Pragma"
+                "Pragma",
+                "Content-Length"
         ));
 
         // Установка времени кеширования preflight-запросов

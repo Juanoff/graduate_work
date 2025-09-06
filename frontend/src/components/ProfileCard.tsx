@@ -18,14 +18,23 @@ export function ProfileCard({ user, isPublic = false, canEditAvatar = false }: P
 			const formData = new FormData();
 			formData.append('avatar', file);
 
-			const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me/upload-avatar`, {
-				method: 'POST',
-				body: formData,
-				credentials: 'include'
-			});
+			try {
+				const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me/upload-avatar`, {
+					method: 'POST',
+					body: formData,
+					credentials: 'include'
+				});
 
-			const data = await res.json();
-			setAvatarUrl(data.url);
+				if (!res.ok) {
+					console.error('Upload error:', await res.text());
+					return;
+				}
+
+				const data = await res.json();
+				setAvatarUrl(data.url);
+			} catch (err) {
+				console.error('Fetch error:', err);
+			}
 		}
 	};
 
