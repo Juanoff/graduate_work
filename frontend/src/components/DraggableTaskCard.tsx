@@ -4,7 +4,7 @@ import { DraggableAttributes, useDraggable } from "@dnd-kit/core";
 import { AccessLevel, Task } from "@/types/task";
 import React, { ComponentType, RefObject, useState } from "react";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import { showOverdueToast } from "./TaskCard";
+import { useShowToast } from "@/utils/toast";
 
 interface DraggableTaskCardProps<T> {
 	task: Task;
@@ -37,7 +37,7 @@ const DraggableTaskCard = <T extends object>({
 	const [isShaking, setIsShaking] = useState(false);
 	const canEdit = task.accessLevel === AccessLevel.EDIT || task.accessLevel === AccessLevel.OWNER;
 	const canDelete = task.accessLevel === AccessLevel.OWNER;
-
+	const showToast = useShowToast();
 	const errorForToast = !canEdit ? "Недостаточно прав для изменения статуса задачи"
 		: isOverdue ? "Нельзя изменить статус просроченной задачи" : "Ошибка обновления статуса задачи";
 
@@ -45,7 +45,7 @@ const DraggableTaskCard = <T extends object>({
 		if (isOverdue || !canEdit) {
 			e.preventDefault();
 			setIsShaking(true);
-			showOverdueToast(errorForToast);
+			showToast('error', errorForToast);
 			setTimeout(() => setIsShaking(false), 300);
 		}
 	};

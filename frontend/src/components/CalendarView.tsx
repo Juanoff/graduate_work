@@ -16,6 +16,7 @@ import MonthTaskCard from "./MonthTaskCard";
 import DayTaskCard from "./DayTaskCard";
 import WeekTaskCard from "./WeekTaskCard";
 import { showOverdueToast } from "./TaskCard";
+import { useShowToast } from "@/utils/toast";
 
 enum CalendarViewType {
 	DAY = "DAY",
@@ -33,6 +34,7 @@ const CalendarView = () => {
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 	const [itemToDelete, setItemToDelete] = useState<{ type: "task"; id: number } | null>(null);
 	const [activeTask, setActiveTask] = useState<Task | null>(null);
+	const showToast = useShowToast();
 
 	const dateRange = useMemo(() => {
 		if (view === CalendarViewType.DAY) {
@@ -107,7 +109,7 @@ const CalendarView = () => {
 						const errorMessage = "Задачи нельзя назначать на прошедшие дни. Попробуйте выбрать сегодня или позднее";
 						showOverdueToast(errorMessage, 5000, 50);
 					} else {
-						showOverdueToast("Ошибка при обновлении статуса");
+						showToast('error', "Ошибка при обновлении статуса");
 					}
 
 					updateTask(originalTask);

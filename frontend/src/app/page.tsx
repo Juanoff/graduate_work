@@ -16,7 +16,6 @@ import {
 	XMarkIcon,
 } from "@heroicons/react/24/outline";
 import React from "react";
-import toast from "react-hot-toast";
 import CategoryFilter from "@/components/CategoryFilter";
 import { useAuth } from "@/context/useAuth";
 import { useTaskStore } from "@/stores/taskStore";
@@ -25,6 +24,7 @@ import TaskCard from "@/components/TaskCard";
 import SearchAndFilter from "@/components/SearchAndFilter";
 import Loading from "@/components/Loading";
 import { canEditCategory } from "@/utils/permissions"
+import { useShowToast } from "@/utils/toast";
 
 export default function HomePage() {
 	const auth = useAuth();
@@ -60,7 +60,7 @@ export default function HomePage() {
 	const [editTask, setEditTask] = useState<Task | null>(null);
 	const [activeTask, setActiveTask] = useState<Task | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
-
+	const showToast = useShowToast();
 	const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 	const [itemToDelete, setItemToDelete] = useState<{
 		type: "category" | "task";
@@ -190,7 +190,7 @@ export default function HomePage() {
 
 			if (!response.ok) {
 				const error = await response.text();
-				toast.error(error || "Ошибка при обновлении статуса");
+				showToast("error", error || "Ошибка при обновлении статуса");
 				// Откатываем изменения
 				updateTask(originalTask);
 			}

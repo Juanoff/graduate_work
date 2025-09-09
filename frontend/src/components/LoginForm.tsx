@@ -29,7 +29,6 @@ const LoginForm = () => {
 		}
 
 		setIsSubmitting(false);
-		console.log("GOOD");
 	};
 
 	return (
@@ -48,7 +47,7 @@ const LoginForm = () => {
 							onChange={(e) => setUsername(e.target.value)}
 						/>
 					</div>
-					
+
 					<div className="relative">
 						<input
 							type={showPassword ? "text" : "password"}

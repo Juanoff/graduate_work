@@ -1,6 +1,7 @@
 import scrollbarPlugin from "tailwind-scrollbar";
 
 module.exports = {
+	darkMode: 'class',
 	content: [
 		"./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
 		"./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -26,12 +27,6 @@ module.exports = {
 			animation: {
 				glow: "glow 1.5s infinite alternate ease-in-out",
 			},
-			// keyframes: {
-			// 	glow: {
-			// 		"0%": { filter: "brightness(100%)" },
-			// 		"100%": { filter: "brightness(180%)" },
-			// 	},
-			// },
 		},
 	},
 	plugins: [

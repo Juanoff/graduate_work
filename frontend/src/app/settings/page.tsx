@@ -3,9 +3,8 @@
 import SettingsModal from "@/components/SettingsModal";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import Image from "next/image";
-import { showOverdueToast } from "@/components/TaskCard";
+import { useShowToast } from "@/utils/toast";
 
 export default function SettingsPage() {
 	const [isConnected, setIsConnected] = useState(false);
@@ -15,6 +14,7 @@ export default function SettingsPage() {
 	const [showConfirmDisconnect, setShowConfirmDisconnect] = useState(false);
 	const [lastSync, setLastSync] = useState<Date | null>(null);
 	const searchParams = useSearchParams();
+	const showToast = useShowToast();
 
 	useEffect(() => {
 		const checkConnection = async () => {
@@ -38,11 +38,11 @@ export default function SettingsPage() {
 		const status = searchParams.get("status");
 		const message = searchParams.get("message");
 		if (status === "success") {
-			toast.success("Google Calendar успешно подключен");
+			showToast("success", "Google Calendar успешно подключен");
 		} else if (status === "error" && message) {
-			toast.error(`Ошибка в подключении Google Calendar: ${message}`);
+			showToast("error", `Ошибка в подключении Google Calendar: ${message}`);
 		}
-	}, [searchParams]);
+	}, [searchParams, showToast]);
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const handleConnect = async () => {
@@ -52,12 +52,12 @@ export default function SettingsPage() {
 				{ credentials: "include" }
 			);
 
-			if (!res.ok) throw new Error("Failed to fetch auth URL");
+			if (!res.ok) throw new Error("Ошибка при получении ссылки авторизации Google");
 
 			const { url } = await res.json();
 			window.location.href = url; // Redirect to Google OAuth
 		} catch {
-			toast.error("Failed to initiate Google Calendar connection");
+			showToast("error", "Ошибка при подключении к Google Calendar");
 		}
 	};
 
@@ -75,19 +75,19 @@ export default function SettingsPage() {
 			});
 
 			if (res.ok) {
-				toast.success("Calendar synced successfully");
+				showToast("success", "Календарь успешно синхронизирован");
 				setLastSync(new Date());
 			} else {
 				const error = await res.text();
 				if (error.includes("Please reconnect Google Calendar")) {
-					toast.error("Пожалуйста, переподключитесь Google Calendar");
+					showToast("error", "Пожалуйста, переподключитесь к Google Calendar");
 					setIsConnected(false);
 				} else {
-					toast.error(error || "Ошибка синхронизации");
+					showToast("error", error || "Ошибка синхронизации");
 				}
 			}
 		} catch {
-			toast.error("Ошибка синхронизации");
+			showToast("error", "Ошибка синхронизации");
 		} finally {
 			setIsSyncing(false);
 		}
@@ -99,13 +99,14 @@ export default function SettingsPage() {
 				method: "POST",
 				credentials: "include",
 			});
+
 			if (res.ok) {
-				toast.success("Синхронизация отклонена");
+				showToast("success", "Синхронизация отклонена");
 			} else {
-				toast.error("Ошибка в отмене синхронизации");
+				showToast("error", "Ошибка прерывания синхронизации");
 			}
 		} catch {
-			toast.error("Ошибка в отмене синхронизации");
+			showToast("error", "Ошибка прерывания синхронизации");
 		} finally {
 			setIsSyncing(false);
 		}
@@ -117,15 +118,16 @@ export default function SettingsPage() {
 				method: "POST",
 				credentials: "include",
 			});
+
 			if (res.ok) {
-				toast.success("Отмена синхронизации прошла успешно");
+				showToast("success", "Отмена синхронизации прошла успешно");
 				setLastSync(null);
 			} else {
 				const error = await res.text();
-				toast.error(error || "Undo failed");
+				showToast("error", error || "Ошибка отмены синхронизации");
 			}
 		} catch {
-			toast.error("Undo failed");
+			showToast("error", "Ошибка отмены синхронизации");
 		}
 	};
 
@@ -141,15 +143,15 @@ export default function SettingsPage() {
 				credentials: "include",
 			});
 			if (res.ok) {
-				toast.success("Google Calendar успешно отключен");
+				showToast("success", "Google Calendar успешно отключен");
 				setIsConnected(false);
 				setEmail("");
 				setLastSync(null);
 			} else {
-				toast.error("Disconnect failed");
+				showToast("error", "Ошибка отключения");
 			}
 		} catch {
-			toast.error("Disconnect failed");
+			showToast("error", "Ошибка отключения");
 		}
 	};
 
@@ -216,7 +218,7 @@ export default function SettingsPage() {
 					</div>
 				) : (
 					<button
-						onClick={() => showOverdueToast("Интеграция с Google Calendar в разработке")}
+						onClick={() => showToast('error', "Интеграция с Google Calendar в разработке")}
 						className="flex items-center px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
 					>
 						<Image

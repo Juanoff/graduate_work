@@ -6,7 +6,7 @@ import AuthProvider from "@/context/AuthProvider";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Cog6ToothIcon, CalendarDaysIcon, UserIcon, BellIcon, TrophyIcon, ClockIcon, Bars3Icon } from "@heroicons/react/24/outline";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import NotificationsDropdown from "@/components/NotificationDropDown";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { Toaster } from "react-hot-toast";
@@ -41,6 +41,7 @@ export default function RootLayout({
 	const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 	const unreadCount = useNotificationStore((state) => state.unreadCount);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const [isDarkMode, setIsDarkMode] = useState(false);
 
 	const handleBellClick = () => {
 		setIsNotificationsOpen(!isNotificationsOpen);
@@ -66,6 +67,32 @@ export default function RootLayout({
 		setIsMobileMenuOpen(!isMobileMenuOpen);
 	};
 
+	const toggleDarkMode = () => {
+		setIsDarkMode(prev => {
+			const newMode = !prev;
+			if (typeof window !== "undefined") {
+				if (newMode) {
+					document.documentElement.classList.add("dark");
+					localStorage.setItem("theme", "dark");
+				} else {
+					document.documentElement.classList.remove("dark");
+					localStorage.setItem("theme", "light");
+				}
+			}
+			return newMode;
+		});
+	};
+
+	useEffect(() => {
+		if (typeof window !== "undefined") {
+			const savedTheme = localStorage.getItem("theme");
+			if (savedTheme === "dark") {
+				document.documentElement.classList.add("dark");
+				setIsDarkMode(true);
+			}
+		}
+	}, []);
+
 	return (
 		<html lang="ru">
 			<body
@@ -75,7 +102,7 @@ export default function RootLayout({
 					<QueryClientProvider client={queryClient}>
 						<AuthProvider>
 							<div className="min-h-screen bg-gray-100">
-								<nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
+								<nav className="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center">
 									<Link href="/" className="text-2xl font-bold text-blue-600 ml-4">
 										<span className="text-xl mt-2">Task Tracker</span>
 									</Link>
@@ -145,6 +172,13 @@ export default function RootLayout({
 										>
 											<ClockIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-1" />
 											{/* <span className="hidden lg:inline">Pomodoro</span> */}
+										</button>
+										<button
+											onClick={toggleDarkMode}
+											className="ml-4 px-2 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+											aria-label="Переключить тему"
+										>
+											{isDarkMode ? "🌙" : "☀️"}
 										</button>
 									</div>
 								</nav>
