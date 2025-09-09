@@ -9,6 +9,7 @@ import { Task } from "@/types/task";
 import { AnimatePresence, motion } from "framer-motion";
 import DraggableTaskCard from "./DraggableTaskCard";
 import clsx from "clsx";
+import { useShowToast } from "@/utils/toast";
 
 interface DayViewProps {
 	date: Date;
@@ -54,6 +55,7 @@ const DayView = ({
 		return tasksBySlot;
 	}, [dayTasks, timeSlots, formattedDate]);
 
+	const showToast = useShowToast();
 	const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
 	const [expandedSlots, setExpandedSlots] = useState<string[]>([]);
 	const TASK_LIMIT = 3;
@@ -135,7 +137,7 @@ const DayView = ({
 									onClick={() => {
 										const today = new Date();
 										if (new Date(dateTimeId).getTime() < today.setHours(0, 0, 0, 0)) {
-											alert("Нельзя создавать задачи в прошлом");
+											showToast("error", "Нельзя создавать задачи в прошлом");
 											return;
 										}
 										setSelectedDate(dateTimeId);

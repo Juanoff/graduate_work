@@ -5,6 +5,7 @@ import React, { useMemo } from "react";
 import { Task } from "@/types/task";
 import DraggableTaskCard from "./DraggableTaskCard";
 import MonthTaskCard from "./MonthTaskCard";
+import { useShowToast } from "@/utils/toast";
 
 interface MonthViewProps {
 	startDate: Date;
@@ -19,6 +20,7 @@ const MonthView = ({
 	setSelectedDate,
 	setIsTaskModalOpen
 }: MonthViewProps) => {
+	const showToast = useShowToast();
 	const daysInMonth = getDaysInMonth(startDate);
 	const firstDayOfMonth = startOfMonth(startDate);
 	const days = useMemo(
@@ -106,7 +108,7 @@ const MonthView = ({
 									onClick={() => {
 										const today = new Date();
 										if (day.getTime() < today.setHours(0, 0, 0, 0)) {
-											alert("Нельзя создавать задачи в прошлом");
+											showToast("error", "Нельзя создавать задачи в прошлом");
 											return;
 										}
 										setSelectedDate(formattedDate);

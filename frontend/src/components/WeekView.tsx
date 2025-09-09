@@ -5,6 +5,7 @@ import WeekTaskCard from "@/components/WeekTaskCard";
 import React, { useMemo } from "react";
 import { Task } from "@/types/task";
 import DraggableTaskCard from "./DraggableTaskCard";
+import { useShowToast } from "@/utils/toast";
 
 interface WeekViewProps {
 	startDate: Date;
@@ -23,6 +24,7 @@ const WeekView = ({
 	setEditTask,
 	handleDeleteItem,
 }: WeekViewProps) => {
+	const showToast = useShowToast();
 	const days = Array.from({ length: 7 }, (_, i) => addDays(startDate, i));
 	const dayTasksMap = useMemo(() => {
 		const tasksByDay: { [key: string]: Task[] } = {};
@@ -90,7 +92,7 @@ const WeekView = ({
 								onClick={() => {
 									const today = new Date();
 									if (day.getTime() < today.setHours(0, 0, 0, 0)) {
-										alert("Нельзя создавать задачи в прошлом");
+										showToast("error", "Нельзя создавать задачи в прошлом");
 										return;
 									}
 									setSelectedDate(formattedDate);
