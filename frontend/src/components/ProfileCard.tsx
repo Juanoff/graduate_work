@@ -48,7 +48,7 @@ export function ProfileCard({ user, isPublic = false, canEditAvatar = false }: P
 			<UserAvatar
 				username={user.username}
 				avatarUrl={avatarUrl}
-				useNextImage={false}
+				useNextImage
 				size={96}
 				className="border-2 border-gray-200"
 			/>
