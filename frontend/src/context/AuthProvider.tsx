@@ -66,7 +66,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 
 	const login = async (username: string, password: string) => {
 		try {
-			setIsLoading(true);
 			const userData = await loginService(username, password);
 			setUser({ id: userData.id, username: userData.username, role: userData.role });
 
@@ -77,8 +76,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 		} catch (error) {
 			console.error("Login failed:", error);
 			return false;
-		} finally {
-			setIsLoading(false);
 		}
 	};
 
