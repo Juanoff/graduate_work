@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuth } from "@/context/useAuth";
 import Link from "next/link";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 const LoginForm = () => {
 	const [username, setUsername] = useState("");
@@ -10,6 +11,7 @@ const LoginForm = () => {
 	const [error, setError] = useState("");
 	const auth = useAuth();
 	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -46,15 +48,23 @@ const LoginForm = () => {
 							onChange={(e) => setUsername(e.target.value)}
 						/>
 					</div>
-					<div>
+					
+					<div className="relative">
 						<input
-							type="password"
+							type={showPassword ? "text" : "password"}
 							placeholder="Пароль"
-							className={`w-full p-2 border rounded ${error ? "border-red-500" : "border-gray-300"
-								}`}
+							className={`w-full p-2 pr-10 border rounded ${error ? "border-red-500" : "border-gray-300"}`}
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 						/>
+						<button
+							type="button"
+							onClick={() => setShowPassword(!showPassword)}
+							className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-900 dark:hover:text-white"
+							aria-label={showPassword ? "Скрыть пароль" : "Показать пароль"}
+						>
+							{showPassword ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
+						</button>
 					</div>
 
 					{error && <p className="text-red-500 text-sm">{error}</p>}

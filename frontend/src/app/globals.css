@@ -11,9 +11,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    /* use dark mode */
-  }
+  
 }
 
 body {
