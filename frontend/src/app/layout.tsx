@@ -1,18 +1,19 @@
 "use client";
 
-//import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AuthProvider from "@/context/AuthProvider";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Cog6ToothIcon, CalendarDaysIcon, ClipboardDocumentListIcon, UserIcon, BellIcon, TrophyIcon, ClockIcon, Bars3Icon } from "@heroicons/react/24/outline"; //HomeIcon,
+import { Cog6ToothIcon, CalendarDaysIcon, UserIcon, BellIcon, TrophyIcon, ClockIcon, Bars3Icon } from "@heroicons/react/24/outline";
 import { useCallback, useState } from "react";
 import NotificationsDropdown from "@/components/NotificationDropDown";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { Toaster } from "react-hot-toast";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PomodoroTimer from "@/components/PomodoroTimer";
+import { I18nextProvider } from "react-i18next";
+import i18n from "@/i18n";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -66,179 +67,171 @@ export default function RootLayout({
 	};
 
 	return (
-		<html lang="en">
+		<html lang="ru">
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<QueryClientProvider client={queryClient}>
-					<AuthProvider>
-						<div className="min-h-screen bg-gray-100">
-							<nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
-								<Link href="/" className="text-2xl font-bold text-blue-600 ml-4">
-									<span className="text-xl mt-2">Task Tracker</span>
-								</Link>
+				<I18nextProvider i18n={i18n}>
+					<QueryClientProvider client={queryClient}>
+						<AuthProvider>
+							<div className="min-h-screen bg-gray-100">
+								<nav className="bg-white shadow-md py-4 px-6 flex justify-between items-center">
+									<Link href="/" className="text-2xl font-bold text-blue-600 ml-4">
+										<span className="text-xl mt-2">Task Tracker</span>
+									</Link>
 
-								{/* Кнопка гамбургер-меню для мобильных */}
-								<button
-									className="md:hidden text-gray-700 hover:text-blue-600 focus:outline-none"
-									onClick={toggleMobileMenu}
-									aria-label="Открыть меню"
-								>
-									<Bars3Icon className="w-6 h-6" />
-								</button>
-
-								{/* Навигационное меню для десктопа */}
-								<div className="hidden md:flex space-x-4 lg:space-x-6 mr-4">
-									<Link
-										href="/me"
-										className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/me" && "font-bold text-blue-600"
-											}`}
-									>
-										<UserIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-1" />
-										{/* <span className="hidden lg:inline">Профиль</span> */}
-									</Link>
-									<Link
-										href="/tasks"
-										className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/tasks" && "font-bold text-blue-600"
-											}`}
-									>
-										<ClipboardDocumentListIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-1" />
-										{/* <span className="hidden lg:inline">Задачи</span> */}
-									</Link>
-									<div className="relative inline-flex items-center">
-										<button
-											onClick={handleBellClick}
-											className="text-gray-700 hover:text-blue-600 focus:outline-none relative"
-											aria-label="Уведомления"
-										>
-											<BellIcon className="w-5 h-5 sm:w-6 sm:h-6" />
-											{unreadCount > 0 && (
-												<span className="absolute top-0 right-0 -mt-1 -mr-1 bg-red-500 text-white text-xs font-semibold rounded-full w-4 h-4 flex items-center justify-center">
-													{unreadCount > 99 ? "99+" : unreadCount}
-												</span>
-											)}
-										</button>
-										{isNotificationsOpen && (
-											<NotificationsDropdown onClose={() => setIsNotificationsOpen(false)} />
-										)}
-									</div>
-									<Link
-										href="/calendar"
-										className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/calendar" && "font-bold text-blue-600"
-											}`}
-									>
-										<CalendarDaysIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-1" />
-										{/* <span className="hidden lg:inline">Календарь</span> */}
-									</Link>
-									<Link
-										href="/achievements"
-										className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/achievements" && "font-bold text-blue-600"
-											}`}
-									>
-										<TrophyIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-1" />
-										{/* <span className="hidden lg:inline">Достижения</span> */}
-									</Link>
-									<Link
-										href="/settings"
-										className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/settings" && "font-bold text-blue-600"
-											}`}
-									>
-										<Cog6ToothIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-1" />
-										{/* <span className="hidden lg:inline">Настройки</span> */}
-									</Link>
 									<button
-										onClick={handleOpenPomodoro}
-										className="text-gray-700 hover:text-blue-600 focus:outline-none flex items-center"
-										aria-label="Открыть Pomodoro таймер"
+										className="md:hidden text-gray-700 hover:text-blue-600 focus:outline-none"
+										onClick={toggleMobileMenu}
+										aria-label="Открыть меню"
 									>
-										<ClockIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-1" />
-										{/* <span className="hidden lg:inline">Pomodoro</span> */}
+										<Bars3Icon className="w-6 h-6" />
 									</button>
-								</div>
-							</nav>
 
-							{/* Мобильное меню */}
-							{isMobileMenuOpen && (
-								<div className="md:hidden bg-white shadow-md py-4 px-4">
-									<div className="flex flex-col space-y-4">
+									{/* Навигационное меню для десктопа */}
+									<div className="hidden md:flex space-x-4 lg:space-x-6 mr-4">
 										<Link
 											href="/me"
 											className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/me" && "font-bold text-blue-600"
 												}`}
-											onClick={toggleMobileMenu}
 										>
-											<UserIcon className="w-6 h-6 mr-2" />
-											Профиль
+											<UserIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-1" />
 										</Link>
-										<button
-											onClick={handleBellClick}
-											className="text-gray-700 hover:text-blue-600 flex items-center"
-											aria-label="Уведомления"
-										>
-											<BellIcon className="w-6 h-6 mr-2" />
-											Уведомления
-											{unreadCount > 0 && (
-												<span className="ml-2 bg-red-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
-													{unreadCount > 99 ? "99+" : unreadCount}
-												</span>
+										<div className="relative inline-flex items-center">
+											<button
+												onClick={handleBellClick}
+												className="text-gray-700 hover:text-blue-600 focus:outline-none relative"
+												aria-label="Уведомления"
+											>
+												<BellIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+												{unreadCount > 0 && (
+													<span className="absolute top-0 right-0 -mt-1 -mr-1 bg-red-500 text-white text-xs font-semibold rounded-full w-4 h-4 flex items-center justify-center">
+														{unreadCount > 99 ? "99+" : unreadCount}
+													</span>
+												)}
+											</button>
+											{isNotificationsOpen && (
+												<NotificationsDropdown onClose={() => setIsNotificationsOpen(false)} />
 											)}
-										</button>
+										</div>
 										<Link
 											href="/calendar"
 											className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/calendar" && "font-bold text-blue-600"
 												}`}
-											onClick={toggleMobileMenu}
 										>
-											<CalendarDaysIcon className="w-6 h-6 mr-2" />
-											Календарь
+											<CalendarDaysIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-1" />
+											{/* <span className="hidden lg:inline">Календарь</span> */}
 										</Link>
 										<Link
 											href="/achievements"
 											className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/achievements" && "font-bold text-blue-600"
 												}`}
-											onClick={toggleMobileMenu}
 										>
-											<TrophyIcon className="w-6 h-6 mr-2" />
-											Достижения
+											<TrophyIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-1" />
+											{/* <span className="hidden lg:inline">Достижения</span> */}
 										</Link>
 										<Link
 											href="/settings"
 											className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/settings" && "font-bold text-blue-600"
 												}`}
-											onClick={toggleMobileMenu}
 										>
-											<Cog6ToothIcon className="w-6 h-6 mr-2" />
-											Настройки
+											<Cog6ToothIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-1" />
+											{/* <span className="hidden lg:inline">Настройки</span> */}
 										</Link>
 										<button
-											onClick={() => {
-												handleOpenPomodoro();
-												toggleMobileMenu();
-											}}
-											className="text-gray-700 hover:text-blue-600 flex items-center"
+											onClick={handleOpenPomodoro}
+											className="text-gray-700 hover:text-blue-600 focus:outline-none flex items-center"
 											aria-label="Открыть Pomodoro таймер"
 										>
-											<ClockIcon className="w-6 h-6 mr-2" />
-											Pomodoro
+											<ClockIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-1" />
+											{/* <span className="hidden lg:inline">Pomodoro</span> */}
 										</button>
 									</div>
-								</div>
-							)}
+								</nav>
 
-							<main className="mx-2 sm:mx-4 md:mx-6 lg:mx-10 my-6 sm:my-8 md:my-10 p-4 sm:p-6 bg-white shadow-lg rounded-xl">
-								<Toaster position="top-right" />
-								{children}
-							</main>
+								{/* Мобильное меню */}
+								{isMobileMenuOpen && (
+									<div className="md:hidden bg-white shadow-md py-4 px-4">
+										<div className="flex flex-col space-y-4">
+											<Link
+												href="/me"
+												className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/me" && "font-bold text-blue-600"
+													}`}
+												onClick={toggleMobileMenu}
+											>
+												<UserIcon className="w-6 h-6 mr-2" />
+												Профиль
+											</Link>
+											<button
+												onClick={handleBellClick}
+												className="text-gray-700 hover:text-blue-600 flex items-center"
+												aria-label="Уведомления"
+											>
+												<BellIcon className="w-6 h-6 mr-2" />
+												Уведомления
+												{unreadCount > 0 && (
+													<span className="ml-2 bg-red-500 text-white text-xs font-semibold rounded-full w-5 h-5 flex items-center justify-center">
+														{unreadCount > 99 ? "99+" : unreadCount}
+													</span>
+												)}
+											</button>
+											<Link
+												href="/calendar"
+												className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/calendar" && "font-bold text-blue-600"
+													}`}
+												onClick={toggleMobileMenu}
+											>
+												<CalendarDaysIcon className="w-6 h-6 mr-2" />
+												Календарь
+											</Link>
+											<Link
+												href="/achievements"
+												className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/achievements" && "font-bold text-blue-600"
+													}`}
+												onClick={toggleMobileMenu}
+											>
+												<TrophyIcon className="w-6 h-6 mr-2" />
+												Достижения
+											</Link>
+											<Link
+												href="/settings"
+												className={`text-gray-700 hover:text-blue-600 flex items-center ${pathname === "/settings" && "font-bold text-blue-600"
+													}`}
+												onClick={toggleMobileMenu}
+											>
+												<Cog6ToothIcon className="w-6 h-6 mr-2" />
+												Настройки
+											</Link>
+											<button
+												onClick={() => {
+													handleOpenPomodoro();
+													toggleMobileMenu();
+												}}
+												className="text-gray-700 hover:text-blue-600 flex items-center"
+												aria-label="Открыть Pomodoro таймер"
+											>
+												<ClockIcon className="w-6 h-6 mr-2" />
+												Pomodoro
+											</button>
+										</div>
+									</div>
+								)}
 
-							<PomodoroTimer
-								isOpen={isPomodoroOpen}
-								onClose={handleClosePomodoro}
-								minimized={isPomodoroMinimized}
-								onMinimizeToggle={handleMinimizeToggle}
-							/>
-						</div>
-					</AuthProvider>
-				</QueryClientProvider>
+								<main className="mx-2 sm:mx-4 md:mx-6 lg:mx-10 my-6 sm:my-8 md:my-10 p-4 sm:p-6 bg-white shadow-lg rounded-xl">
+									<Toaster position="top-right" />
+									{children}
+								</main>
+
+								<PomodoroTimer
+									isOpen={isPomodoroOpen}
+									onClose={handleClosePomodoro}
+									minimized={isPomodoroMinimized}
+									onMinimizeToggle={handleMinimizeToggle}
+								/>
+							</div>
+						</AuthProvider>
+					</QueryClientProvider>
+				</I18nextProvider>
 			</body>
 		</html >
 	);
