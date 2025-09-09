@@ -31,6 +31,7 @@ export function ProfileCard({ user, isPublic = false, canEditAvatar = false }: P
 
 			if (!res.ok) {
 				const errorData = await res.json();
+				console.log("ERROR: " + errorData);
 				showToast('error', errorData.code || 'INTERNAL_SERVER_ERROR');
 				return;
 			}
@@ -38,8 +39,10 @@ export function ProfileCard({ user, isPublic = false, canEditAvatar = false }: P
 			const data = await res.json();
 			setAvatarUrl(data.url + '?' + new Date().getTime());
 			showToast('success', 'UPLOAD_SUCCESS');
+			console.log("UPLOAD SUCCESS !#");
 		} catch {
 			showToast('error', 'INTERNAL_SERVER_ERROR');
+			console.log("ERROR 500 MB!")
 		}
 	};
 
@@ -54,10 +57,35 @@ export function ProfileCard({ user, isPublic = false, canEditAvatar = false }: P
 			/>
 
 			{canEditAvatar && (
-				<label className="mt-2 cursor-pointer text-blue-500 hover:underline">
-					{t('UPLOAD_AVATAR', { defaultValue: 'Загрузить аватар' })}
-					<input type="file" className="hidden" onChange={handleUpload} accept="image/*" />
-				</label>
+				<>
+					<label
+						htmlFor="avatarUpload"
+						className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition cursor-pointer"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="h-8 w-8 text-white"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M3 7h2l2-3h10l2 3h2v13H3V7z"
+							/>
+							<circle cx="12" cy="13" r="3" />
+						</svg>
+					</label>
+					<input
+						id="avatarUpload"
+						type="file"
+						className="hidden"
+						onChange={handleUpload}
+						accept="image/*"
+					/>
+				</>
 			)}
 
 			<h1 className="text-2xl font-bold text-gray-800 mt-4">{user.username}</h1>

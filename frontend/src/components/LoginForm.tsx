@@ -13,15 +13,15 @@ const LoginForm = () => {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!auth) {
-			setError("The authorization context is unavailable.");
+			setError("Авторизация недоступна.");
 			return;
 		}
 
+		setError("");
 		const success = await auth.login(username, password);
+
 		if (!success) {
-			setError("Incorrect data.");
-		} else {
-			console.log("Login successful, redirecting...");
+			setError("Неверный логин или пароль.");
 		}
 	};
 
@@ -29,7 +29,7 @@ const LoginForm = () => {
 		<div className="flex items-center justify-center h-screen bg-gray-100">
 			<div className="bg-white p-6 rounded-lg shadow-md w-96">
 				<h2 className="text-xl font-bold mb-4">Вход</h2>
-				{error && <p className="text-red-500">{error}</p>}
+
 				<form onSubmit={handleSubmit}>
 					<input
 						type="text"
@@ -45,7 +45,13 @@ const LoginForm = () => {
 						value={password}
 						onChange={(e) => setPassword(e.target.value)}
 					/>
-					<button className="w-full bg-blue-500 text-white p-2 rounded">
+
+					{error && <p className="text-red-500">{error}</p>}
+
+					<button
+						type="submit"
+						className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
+					>
 						Войти
 					</button>
 				</form>
