@@ -32,7 +32,7 @@ const LoginForm = () => {
 	};
 
 	return (
-		<div className="flex items-center justify-center h-screen bg-gray-100">
+		<div className="flex items-center rounded-lg justify-center h-screen bg-gray-100">
 			<div className="bg-white p-6 rounded-lg shadow-md w-96">
 				<h2 className="text-xl font-bold mb-4">Вход</h2>
 
@@ -41,7 +41,7 @@ const LoginForm = () => {
 						<input
 							type="text"
 							placeholder="Логин"
-							className={`w-full p-2 border rounded ${error ? "border-red-500" : "border-gray-300"
+							className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${error ? "border-red-500" : "border-gray-300"
 								}`}
 							value={username}
 							onChange={(e) => setUsername(e.target.value)}
@@ -52,7 +52,7 @@ const LoginForm = () => {
 						<input
 							type={showPassword ? "text" : "password"}
 							placeholder="Пароль"
-							className={`w-full p-2 pr-10 border rounded ${error ? "border-red-500" : "border-gray-300"}`}
+							className={`w-full p-2 pr-10 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${error ? "border-red-500" : "border-gray-300"}`}
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 						/>
@@ -71,7 +71,7 @@ const LoginForm = () => {
 					<button
 						type="submit"
 						disabled={isSubmitting}
-						className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition disabled:opacity-50"
+						className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition disabled:opacity-50"
 					>
 						{isSubmitting ? "Входим..." : "Войти"}
 					</button>

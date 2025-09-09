@@ -37,7 +37,13 @@ const RegistrationForm = () => {
 			if (response.ok) {
 				setSuccess(
 					<>
-						Регистрация успешна! Теперь <Link href="/login">войдите</Link>.
+						Регистрация успешна! Теперь{" "}
+						<Link
+							href="/login"
+							className="text-green-600 hover:underline font-medium"
+						>
+							войдите
+						</Link>.
 					</>
 				);
 				reset();
@@ -58,7 +64,7 @@ const RegistrationForm = () => {
 	};
 
 	return (
-		<div className="flex items-center justify-center h-screen bg-gray-100">
+		<div className="flex items-center rounded-lg justify-center h-screen bg-gray-100">
 			<div className="bg-white p-6 rounded-lg shadow-md w-96">
 				<h2 className="text-xl font-bold mb-4">Регистрация</h2>
 
@@ -71,7 +77,7 @@ const RegistrationForm = () => {
 							type="text"
 							placeholder="Логин"
 							{...register("username")}
-							className={`w-full p-2 border rounded ${errors.username ? "border-red-500" : "border-gray-300"
+							className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${errors.username ? "border-red-500" : "border-gray-300"
 								}`}
 						/>
 						{errors.username && (
@@ -84,7 +90,7 @@ const RegistrationForm = () => {
 							type="email"
 							placeholder="Email"
 							{...register("email")}
-							className={`w-full p-2 border rounded ${errors.email ? "border-red-500" : "border-gray-300"
+							className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${errors.email ? "border-red-500" : "border-gray-300"
 								}`}
 						/>
 						{errors.email && (
@@ -97,7 +103,7 @@ const RegistrationForm = () => {
 							type="password"
 							placeholder="Пароль"
 							{...register("password")}
-							className={`w-full p-2 border rounded ${errors.password ? "border-red-500" : "border-gray-300"
+							className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${errors.password ? "border-red-500" : "border-gray-300"
 								}`}
 						/>
 						{errors.password && (
@@ -110,7 +116,7 @@ const RegistrationForm = () => {
 							type="password"
 							placeholder="Подтвердите пароль"
 							{...register("confirmPassword")}
-							className={`w-full p-2 border rounded ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
+							className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
 								}`}
 						/>
 						{errors.confirmPassword && (
@@ -123,7 +129,7 @@ const RegistrationForm = () => {
 					<button
 						type="submit"
 						disabled={isSubmitting}
-						className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:opacity-50"
+						className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 disabled:opacity-50"
 					>
 						{isSubmitting ? "Загрузка..." : "Зарегистрироваться"}
 					</button>
