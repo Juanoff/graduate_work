@@ -3,7 +3,7 @@ import { UserProfile } from '@/types/userProfile';
 import { useState } from 'react';
 import { UserAvatar } from './UserAvatar';
 import { useTranslation } from 'react-i18next';
-import { showToast } from '@/utils/toast';
+import { useShowToast } from '@/utils/toast';
 
 interface ProfileCardProps {
 	user: UserProfile;
@@ -14,6 +14,7 @@ interface ProfileCardProps {
 export function ProfileCard({ user, isPublic = false, canEditAvatar = false }: ProfileCardProps) {
 	const [avatarUrl, setAvatarUrl] = useState<string | null>(user.avatarUrl || null);
 	const { t } = useTranslation();
+	const showToast = useShowToast();
 
 	const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -36,8 +37,11 @@ export function ProfileCard({ user, isPublic = false, canEditAvatar = false }: P
 				return;
 			}
 
+			console.log("Почти дата !#");
 			const data = await res.json();
+			console.log("После даты !#");
 			setAvatarUrl(data.url + '?' + new Date().getTime());
+			console.log("Почти тост показали !#");
 			showToast('success', 'UPLOAD_SUCCESS');
 			console.log("UPLOAD SUCCESS !#");
 		} catch {
