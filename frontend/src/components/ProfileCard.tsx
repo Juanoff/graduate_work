@@ -43,7 +43,6 @@ export function ProfileCard({ user, isPublic = false, canEditAvatar = false }: P
 			setAvatarUrl(data.url + '?' + new Date().getTime());
 			console.log("Почти тост показали !#");
 			showToast('success', 'UPLOAD_SUCCESS');
-			console.log("UPLOAD SUCCESS !#");
 		} catch {
 			showToast('error', 'INTERNAL_SERVER_ERROR');
 			console.log("ERROR 500 MB!")

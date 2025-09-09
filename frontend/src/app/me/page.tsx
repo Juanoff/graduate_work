@@ -10,10 +10,9 @@ import { ProfileCard } from "@/components/ProfileCard";
 import { useForm } from "react-hook-form";
 import { UserProfile } from "@/types/userProfile";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { showOverdueToast } from "@/components/TaskCard";
 import Loading from "@/components/Loading";
 import { userUpdateSchema, UserUpdateForm } from "@/schemas/userUpdateSchema";
-import { showOverdueSuccessToast } from "@/utils/showOverdueSuccessToast";
+import { useShowToast } from "@/utils/toast";
 
 const fetchUserProfile = async (): Promise<UserProfile> => {
 	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me`, {
@@ -44,6 +43,7 @@ export default function MePage() {
 	const { user, logout } = useAuth();
 	const queryClient = useQueryClient();
 	const [editingField, setEditingField] = useState<string | null>(null);
+	const showToast = useShowToast();
 
 	const { data: profile, isLoading } = useQuery({
 		queryKey: ["userProfile", user?.id],
@@ -82,16 +82,16 @@ export default function MePage() {
 			setEditingField(null);
 			reset();
 			clearErrors();
-			showOverdueSuccessToast("Профиль обновлен!");
+			showToast('success', "Профиль обновлен!");
 		},
 		onError: (error: Error) => {
 			const message = error.message || "Произошла ошибка";
 			if (message.includes("Username already exists")) {
-				showOverdueToast("Этот username уже занят");
+				showToast('error', "Этот username уже занят");
 			} else if (message.includes("Email already exists")) {
-				showOverdueToast("Этот email уже занят");
+				showToast('error', "Этот email уже занят");
 			} else {
-				showOverdueToast(message);
+				showToast('error', message);
 			}
 		},
 	});
