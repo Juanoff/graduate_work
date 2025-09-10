@@ -6,6 +6,7 @@ import { ReactNode, useState } from "react";
 import { registrationSchema, RegistrationFormData } from "@/schemas/registrationSchema";
 import Link from "next/link";
 import PasswordInput from "./PasswordInput";
+import LoadingSpinner from "./LoadingSpinner";
 
 const RegistrationForm = () => {
 	const [serverError, setServerError] = useState<string | null>(null);
@@ -56,11 +57,12 @@ const RegistrationForm = () => {
 				} else if (errorData?.message) {
 					setServerError(errorData.message);
 				} else {
-					setServerError("Неизвестная ошибка при регистрации");
+					setServerError("Произошла ошибка. Попробуйте снова позже.");
 				}
 			}
 		} catch (err) {
-			setServerError("Ошибка: " + (err as Error).message);
+			console.error(err);
+			setServerError("Не удалось подключиться к серверу. Попробуйте позже.");
 		}
 	};
 
@@ -118,9 +120,13 @@ const RegistrationForm = () => {
 					<button
 						type="submit"
 						disabled={isSubmitting}
-						className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 disabled:opacity-50"
+						className="w-full flex justify-center items-center bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 disabled:opacity-50"
 					>
-						{isSubmitting ? "Загрузка..." : "Зарегистрироваться"}
+						{isSubmitting ? (
+							<LoadingSpinner size={20} color="white" />
+						) : (
+							"Зарегистрироваться"
+						)}
 					</button>
 				</form>
 

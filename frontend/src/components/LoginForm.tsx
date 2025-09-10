@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
 import PasswordInput from "./PasswordInput";
+import LoadingSpinner from "./LoadingSpinner";
 
 const LoginForm = () => {
 	const [username, setUsername] = useState("");
@@ -52,7 +53,6 @@ const LoginForm = () => {
 							placeholder="Пароль"
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
-							error={error}
 						/>
 					</div>
 
@@ -61,9 +61,13 @@ const LoginForm = () => {
 					<button
 						type="submit"
 						disabled={isSubmitting}
-						className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition disabled:opacity-50"
+						className="w-full flex justify-center items-center bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition disabled:opacity-50"
 					>
-						{isSubmitting ? "Входим..." : "Войти"}
+						{isSubmitting ? (
+							<LoadingSpinner size={20} color="white" />
+						) : (
+							"Войти"
+						)}
 					</button>
 				</form>
 
