@@ -9,7 +9,7 @@ import { Task } from "@/types/task";
 import { AnimatePresence, motion } from "framer-motion";
 import DraggableTaskCard from "./DraggableTaskCard";
 import clsx from "clsx";
-import { useShowToast } from "@/utils/toast";
+import { useShowToast } from "@/hooks/useShowToast";
 
 interface DayViewProps {
 	date: Date;

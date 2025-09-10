@@ -5,7 +5,7 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from "@headlessui/react";
 import { DisplayAchievement } from "@/components/AchievementCard";
 import AchievementCard from "@/components/AchievementCard";
-import { useAuth } from "@/context/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Achievement {
 	id: number;

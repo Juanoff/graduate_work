@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useTaskStore } from '@/stores/taskStore';
-import { initializeWebSocket, updateSubscriptions } from './websocket';
+import { initializeWebSocket, updateSubscriptions } from '../services/websocketService';
 
 export const useWebSocket = (userId: number) => {
 	const { activeTaskIds } = useTaskStore();

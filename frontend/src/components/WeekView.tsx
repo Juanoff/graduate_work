@@ -5,7 +5,7 @@ import WeekTaskCard from "@/components/WeekTaskCard";
 import React, { useMemo } from "react";
 import { Task } from "@/types/task";
 import DraggableTaskCard from "./DraggableTaskCard";
-import { useShowToast } from "@/utils/toast";
+import { useShowToast } from "@/hooks/useShowToast";
 
 interface WeekViewProps {
 	startDate: Date;

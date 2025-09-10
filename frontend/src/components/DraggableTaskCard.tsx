@@ -4,7 +4,7 @@ import { DraggableAttributes, useDraggable } from "@dnd-kit/core";
 import { AccessLevel, Task } from "@/types/task";
 import React, { ComponentType, RefObject, useState } from "react";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import { useShowToast } from "@/utils/toast";
+import { useShowToast } from "@/hooks/useShowToast";
 
 interface DraggableTaskCardProps<T> {
 	task: Task;

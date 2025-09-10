@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/context/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import LogoutIcon from '@mui/icons-material/Logout';
 import { motion } from "framer-motion";
@@ -12,7 +12,7 @@ import { UserProfile } from "@/types/userProfile";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Loading from "@/components/Loading";
 import { userUpdateSchema, UserUpdateForm } from "@/schemas/userUpdateSchema";
-import { useShowToast } from "@/utils/toast";
+import { useShowToast } from "@/hooks/useShowToast";
 
 const fetchUserProfile = async (): Promise<UserProfile> => {
 	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me`, {

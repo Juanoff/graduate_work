@@ -16,7 +16,7 @@ import MonthTaskCard from "./MonthTaskCard";
 import DayTaskCard from "./DayTaskCard";
 import WeekTaskCard from "./WeekTaskCard";
 import { showOverdueToast } from "./TaskCard";
-import { useShowToast } from "@/utils/toast";
+import { useShowToast } from "@/hooks/useShowToast";
 
 enum CalendarViewType {
 	DAY = "DAY",

@@ -17,14 +17,14 @@ import {
 } from "@heroicons/react/24/outline";
 import React from "react";
 import CategoryFilter from "@/components/CategoryFilter";
-import { useAuth } from "@/context/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { useTaskStore } from "@/stores/taskStore";
 import { Tooltip } from "@mui/material";
 import TaskCard from "@/components/TaskCard";
 import SearchAndFilter from "@/components/SearchAndFilter";
 import Loading from "@/components/Loading";
 import { canEditCategory } from "@/utils/permissions"
-import { useShowToast } from "@/utils/toast";
+import { useShowToast } from "@/hooks/useShowToast";
 
 export default function HomePage() {
 	const auth = useAuth();

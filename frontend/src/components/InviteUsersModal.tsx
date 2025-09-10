@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import debounce from 'lodash.debounce';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useAuth } from '@/context/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { AccessLevel } from '@/types/task';
 
 interface User {

@@ -4,7 +4,7 @@ import SettingsModal from "@/components/SettingsModal";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useShowToast } from "@/utils/toast";
+import { useShowToast } from "@/hooks/useShowToast";
 
 export default function SettingsPage() {
 	const [isConnected, setIsConnected] = useState(false);

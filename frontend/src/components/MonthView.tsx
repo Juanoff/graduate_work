@@ -5,7 +5,7 @@ import React, { useMemo } from "react";
 import { Task } from "@/types/task";
 import DraggableTaskCard from "./DraggableTaskCard";
 import MonthTaskCard from "./MonthTaskCard";
-import { useShowToast } from "@/utils/toast";
+import { useShowToast } from "@/hooks/useShowToast";
 
 interface MonthViewProps {
 	startDate: Date;

@@ -10,7 +10,7 @@ interface ToastOptions {
 	iconSize?: number;
 }
 
-export function useShowToast() {
+export const useShowToast = () => {
 	const { t } = useTranslation();
 
 	return debounce(

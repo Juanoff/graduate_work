@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from '@/context/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { Type, Notification, useNotificationStore } from '../stores/notificationStore';
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { formatDistanceToNow } from "date-fns";

@@ -3,7 +3,7 @@ import { UserProfile } from '@/types/userProfile';
 import { useState } from 'react';
 import { UserAvatar } from './UserAvatar';
 import { useTranslation } from 'react-i18next';
-import { useShowToast } from '@/utils/toast';
+import { useShowToast } from '@/hooks/useShowToast';
 
 interface ProfileCardProps {
 	user: UserProfile;

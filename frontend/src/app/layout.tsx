@@ -2,7 +2,7 @@
 
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import AuthProvider from "@/context/AuthProvider";
+import AuthProvider from "@/contexts/AuthProvider";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Cog6ToothIcon, CalendarDaysIcon, UserIcon, BellIcon, TrophyIcon, ClockIcon, Bars3Icon, MoonIcon, SunIcon, } from "@heroicons/react/24/outline";

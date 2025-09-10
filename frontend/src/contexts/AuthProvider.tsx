@@ -6,7 +6,7 @@ import { useWebSocket } from "@/hooks/useWebSocket";
 import { checkAuth, login as loginService, logout as logoutService } from "@/services/authService";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { useTaskStore } from "@/stores/taskStore";
-import { disconnectWebSocket } from "@/hooks/websocket";
+import { disconnectWebSocket } from "@/services/websocketService";
 import Loading from "@/components/Loading";
 import { Role } from "@/types/userProfile";
 
