@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ReactNode, useState } from "react";
 import { registrationSchema, RegistrationFormData } from "@/schemas/registrationSchema";
 import Link from "next/link";
+import PasswordInput from "./PasswordInput";
 
 const RegistrationForm = () => {
 	const [serverError, setServerError] = useState<string | null>(null);
@@ -99,31 +100,19 @@ const RegistrationForm = () => {
 					</div>
 
 					<div>
-						<input
-							type="password"
+						<PasswordInput
 							placeholder="Пароль"
 							{...register("password")}
-							className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${errors.password ? "border-red-500" : "border-gray-300"
-								}`}
+							error={errors.password?.message}
 						/>
-						{errors.password && (
-							<p className="text-red-500 text-sm">{errors.password.message}</p>
-						)}
 					</div>
 
 					<div>
-						<input
-							type="password"
+						<PasswordInput
 							placeholder="Подтвердите пароль"
 							{...register("confirmPassword")}
-							className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all ${errors.confirmPassword ? "border-red-500" : "border-gray-300"
-								}`}
+							error={errors.confirmPassword?.message}
 						/>
-						{errors.confirmPassword && (
-							<p className="text-red-500 text-sm">
-								{errors.confirmPassword.message}
-							</p>
-						)}
 					</div>
 
 					<button

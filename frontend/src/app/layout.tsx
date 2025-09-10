@@ -5,7 +5,7 @@ import "./globals.css";
 import AuthProvider from "@/context/AuthProvider";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Cog6ToothIcon, CalendarDaysIcon, UserIcon, BellIcon, TrophyIcon, ClockIcon, Bars3Icon, } from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, CalendarDaysIcon, UserIcon, BellIcon, TrophyIcon, ClockIcon, Bars3Icon, MoonIcon, SunIcon, } from "@heroicons/react/24/outline";
 import { useCallback, useEffect, useState } from "react";
 import NotificationsDropdown from "@/components/NotificationDropDown";
 import { useNotificationStore } from "@/stores/notificationStore";
@@ -241,7 +241,22 @@ export default function RootLayout({
 												aria-label="Открыть Pomodoro таймер"
 											>
 												<ClockIcon className="w-6 h-6 mr-2" />
-												Pomodoro
+												Pomodoro таймер
+											</button>
+											<button
+												onClick={() => {
+													toggleDarkMode();
+													toggleMobileMenu();
+												}}
+												className="text-gray-700 dark:text-gray-300 hover:text-blue-600 flex items-center"
+												aria-label="Переключить тему"
+											>
+												{isDarkMode ? (
+													<MoonIcon className="w-6 h-6 mr-2" />
+												) : (
+													<SunIcon className="w-6 h-6 mr-2" />
+												)}
+												{isDarkMode ? "Тёмная тема" : "Светлая тема"}
 											</button>
 										</div>
 									</div>
@@ -263,6 +278,6 @@ export default function RootLayout({
 					</QueryClientProvider>
 				</I18nextProvider>
 			</body>
-		</html >
+		</html>
 	);
 }
