@@ -5,7 +5,7 @@ import "./globals.css";
 import AuthProvider from "@/context/AuthProvider";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Cog6ToothIcon, CalendarDaysIcon, UserIcon, BellIcon, TrophyIcon, ClockIcon, Bars3Icon } from "@heroicons/react/24/outline";
+import { Cog6ToothIcon, CalendarDaysIcon, UserIcon, BellIcon, TrophyIcon, ClockIcon, Bars3Icon, } from "@heroicons/react/24/outline";
 import { useCallback, useEffect, useState } from "react";
 import NotificationsDropdown from "@/components/NotificationDropDown";
 import { useNotificationStore } from "@/stores/notificationStore";
@@ -14,6 +14,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import PomodoroTimer from "@/components/PomodoroTimer";
 import { I18nextProvider } from "react-i18next";
 import i18n from "@/i18n";
+import ThemeToggleButton from "@/components/ThemeToggleButton";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -173,13 +174,8 @@ export default function RootLayout({
 											<ClockIcon className="w-5 h-5 sm:w-6 sm:h-6 mr-1" />
 											{/* <span className="hidden lg:inline">Pomodoro</span> */}
 										</button>
-										<button
-											onClick={toggleDarkMode}
-											className="ml-4 px-2 py-1 border rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-											aria-label="Переключить тему"
-										>
-											{isDarkMode ? "🌙" : "☀️"}
-										</button>
+
+										<ThemeToggleButton isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
 									</div>
 								</nav>
 
