@@ -15,6 +15,7 @@ import PomodoroTimer from "@/components/PomodoroTimer";
 import { I18nextProvider } from "react-i18next";
 import i18n from "@/i18n";
 import ThemeToggleButton from "@/components/ThemeToggleButton";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -102,7 +103,7 @@ export default function RootLayout({
 				<I18nextProvider i18n={i18n}>
 					<QueryClientProvider client={queryClient}>
 						<AuthProvider>
-							<div className="min-h-screen bg-gray-100">
+							<div className="min-h-screen flex flex-col bg-gray-100">
 								<nav className="bg-white dark:bg-gray-800 shadow-md py-4 px-6 flex justify-between items-center">
 									<Link href="/" className="text-2xl font-bold text-blue-600 ml-4">
 										<span className="text-xl mt-2">Task Tracker</span>
@@ -262,10 +263,12 @@ export default function RootLayout({
 									</div>
 								)}
 
-								<main className="mx-2 sm:mx-4 md:mx-6 lg:mx-10 my-6 sm:my-8 md:my-10 p-4 sm:p-6 bg-white shadow-lg rounded-xl">
+								<main className="flex=grow mx-2 sm:mx-4 md:mx-6 lg:mx-10 my-6 sm:my-8 md:my-10 p-4 sm:p-6 bg-white shadow-lg rounded-xl">
 									<Toaster position="top-right" />
 									{children}
 								</main>
+
+								<Footer />
 
 								<PomodoroTimer
 									isOpen={isPomodoroOpen}
