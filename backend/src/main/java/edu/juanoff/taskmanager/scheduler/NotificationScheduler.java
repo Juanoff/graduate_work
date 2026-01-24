@@ -59,7 +59,7 @@ public class NotificationScheduler {
         LocalDateTime threshold = now.plusMinutes(maxIntervalMinutes);
 
         List<Task> upcomingTasks = taskService.getAllNotNotifiedUpcomingTasks(now, threshold);
-        log.info("Upcoming tasks: {}", upcomingTasks);
+        log.info("Upcoming tasks: {} tasks found", upcomingTasks.size());
 
         log.info("Found {} upcoming tasks within {} minutes to process", upcomingTasks.size(), maxIntervalMinutes);
 
@@ -67,7 +67,7 @@ public class NotificationScheduler {
                 .map(task -> new TaskWithUsers(task, getUsersWithAccess(task)))
                 .toList();
 
-        log.info("Upcoming tasks and users: {}", tasksWithUsers);
+        log.info("Upcoming tasks and users: {} items", tasksWithUsers.size());
 
         tasksWithUsers.forEach(taskWithUsers -> {
             if (semaphore.tryAcquire()) {
